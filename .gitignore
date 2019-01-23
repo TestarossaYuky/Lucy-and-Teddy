@@ -1,9 +1,9 @@
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
+PRODUCTION/[Ll]ibrary/
+PRODUCTION/[Tt]emp/
+PRODUCTION/[Oo]bj/
+PRODUCTION/[Bb]uild/
+PRODUCTION/[Bb]uilds/
+PRODUCTION/[Ll]ogs/
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
