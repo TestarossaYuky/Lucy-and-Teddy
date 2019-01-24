@@ -19,7 +19,7 @@ public class Rooms : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
     }
 
     public void SwitchLight(bool OnOff)
@@ -37,6 +37,7 @@ public class Rooms : MonoBehaviour
             if (button == 0)
                 isOn = OnOff;
         }
-            
+        
     }
+
 }

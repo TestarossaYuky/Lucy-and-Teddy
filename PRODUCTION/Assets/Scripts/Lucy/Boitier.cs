@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class Boitier : MonoBehaviour
 {
-
-    private bool first = false;
-
     private List<bool> lastInput = new List<bool>() { false, false, false, false, false, false };
-
-    private int overload = 0;
    
     private List<List<Rooms>> globalGroup = new List<List<Rooms>>();
 
@@ -31,12 +26,15 @@ public class Boitier : MonoBehaviour
 
     [SerializeField]
     private List<Rooms> group6 = new List<Rooms>();
+    #endregion
 
     [SerializeField]
     private List<string> inputName = new List<string>();
-    #endregion
 
     public List<bool> button = new List<bool>() { false, false, false, false, false, false };
+
+    private bool isOverload = false;
+    private int overload = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -52,43 +50,85 @@ public class Boitier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < inputName.Count; i++)
+        if (isOverload)
         {
-            if (Input.GetKeyDown(inputName[i]))
-            { 
-                button[i] = true;
-                CheckRooms(globalGroup[i]);
-            }
-
-            if (Input.GetKeyUp(inputName[i]))
+            for (int i = 0; i < globalGroup.Count; i++)
             {
-                SwitchOnOff(button[i], globalGroup[i]);
+                Overload(globalGroup[i]);
                 button[i] = false;
-                lastInput[i] = button[i];
             }
+            overload = 0;
+            
         }
+        else
+        {
+            
+                for (int i = 0; i < inputName.Count; i++)
+                {
+                    if (Input.anyKeyDown)
+                    {
+                        if (Input.GetKeyDown(inputName[i]))
+                        {
+                            button[i] = true;
+                            CheckRooms(globalGroup[i]);
+                            overload++;
+                        }
+                    }
+
+                    if (Input.GetKeyUp(inputName[i]))
+                    {
+                        SwitchOnOff(button[i], globalGroup[i]);
+                        button[i] = false;
+                        lastInput[i] = button[i];
+                        if (overload != 0)
+                            overload--;
+                    }
+                }
+            
+        }
+
+
+        if (overload > 3)
+            isOverload = true;
+
+        else
+            isOverload = false;
+       
+    }
+
+    void Overload(List<Rooms> group)
+    {
+        for (int j = 0; j < group.Count; j++)
+        {
+            group[j].isOn = false;
+            group[j].button = 0;
+        }
+       
     }
 
     void SwitchOnOff(bool active, List<Rooms> group)
     {
-        active = !active;
-
-        if(active == true)
+        if(!isOverload)
         {
-            for (int i=0; i < group.Count; i++)
-            {
-                group[i].SwitchLight(true);
-            }
-        }
+            active = !active;
 
-        else
-        {
-            for (int i = 0; i < group.Count; i++)
+            if (active == true)
             {
-                group[i].SwitchLight(false);
+                for (int i = 0; i < group.Count; i++)
+                {
+                    group[i].SwitchLight(true);
+                }
             }
-           
-        }
+
+            else
+            {
+                for (int i = 0; i < group.Count; i++)
+                {
+                    group[i].SwitchLight(false);
+                }
+
+            }
+        } 
     }
 
     void CheckRooms(List<Rooms> group)
@@ -115,3 +155,4 @@ public class Boitier : MonoBehaviour
         }
     }
 }
+
