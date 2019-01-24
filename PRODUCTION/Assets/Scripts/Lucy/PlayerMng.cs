@@ -23,10 +23,6 @@ public class PlayerMng : MonoBehaviour
     private playerState currentState;
     #endregion
 
-    #region Class
-    //private RoomsMng currentRooms;
-    #endregion
-
     // Start is called before the first frame update
     void Start()
     {
