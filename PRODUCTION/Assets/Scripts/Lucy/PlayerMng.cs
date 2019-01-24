@@ -86,7 +86,7 @@ public class PlayerMng : MonoBehaviour
             SetState(playerState.Move);
 
             if (inputX < 0)
-                this.sprRenderer.flipY = true;
+                this.sprRenderer.flipX = true;
             
             else
                 this.sprRenderer.flipX = false;

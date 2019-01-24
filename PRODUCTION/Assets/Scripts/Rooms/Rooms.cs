@@ -4,40 +4,61 @@ using UnityEngine;
 
 public class Rooms : MonoBehaviour
 {
-    private string roomName;
+    [SerializeField]
+    public Sprite Light;
+
+    [SerializeField]
+    public Sprite Dark;
+
+
+    
     public bool isOn;
     public int button;
+
     private int stage;
+    private string roomName;
+
+    private SpriteRenderer spr;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         roomName = this.gameObject.name;
-   
+        spr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        ChangeSprite();
+    }
 
+    void ChangeSprite()
+    {
+        if (!isOn)
+            spr.sprite = Dark;
+        else
+            spr.sprite = Light;
     }
 
     public void SwitchLight(bool OnOff)
     {
-        
+
         if (OnOff)
         {
             isOn = OnOff;
             button++;
+          
         }
-            
+
         else
         {
             button--;
             if (button == 0)
                 isOn = OnOff;
         }
-        
+
     }
 
 }
