@@ -60,7 +60,7 @@ public class Boitier : MonoBehaviour
 
     private void FixedUpdate()
     {
-        OverloadState();
+        
     }
 
     // Update is called once per frame
@@ -72,8 +72,11 @@ public class Boitier : MonoBehaviour
             {
                 Overload(globalGroup[i]);
                 button[i] = false;
+                lastInput[i] = false;
+                
             }
-            overload = 0;   
+            if (!Input.anyKey)
+                overload = 0;
         }
 
         else
@@ -85,31 +88,42 @@ public class Boitier : MonoBehaviour
                     if (Input.GetKeyDown(inputName[i]))
                     {
                         button[i] = true;
+                        
                         CheckRooms(globalGroup[i]);
+                        
                         overload++;
                     }
+
+
                 }
 
                 if (Input.GetKeyUp(inputName[i]))
                 {
+
                     SwitchOnOff(button[i], globalGroup[i]);
                     button[i] = false;
                     lastInput[i] = button[i];
+
                     if (overload != 0)
                         overload--;
                 }
+
             }
-        }  
+        }
+        OverloadState();
+
     }
 
     #region Overload
 
     void Overload(List<Rooms> group)
     {
+        
         for (int j = 0; j < group.Count; j++)
         {
             group[j].isOn = false;
             group[j].button = 0;
+          
         }
        
     }
@@ -158,8 +172,8 @@ public class Boitier : MonoBehaviour
         {
             if (button[i] == true)
             {
-                if(lastInput[i] != button [i])
-                { 
+                if(button[i] != lastInput[i])
+                {
                     SwitchOnOff(false, group);
                     lastInput[i] = button[i];
                 }   
