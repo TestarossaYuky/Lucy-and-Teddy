@@ -33,18 +33,13 @@ public class PlayerMng : MonoBehaviour
         movement = Vector2.zero;
         SetState(playerState.Idle);
 
-
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
-
-        //currentRooms = RoomsMng.instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(currentState);
-
         if (currentState != playerState.Climb) ;
             Move();
     }

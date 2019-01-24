@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Boitier : MonoBehaviour
 {
-    private int overload = 0;
 
+    private bool first = false;
+
+    private List<bool> lastInput = new List<bool>() { false, false, false, false, false, false };
+
+    private int overload = 0;
+   
     private List<List<Rooms>> globalGroup = new List<List<Rooms>>();
 
     #region List Rooms
@@ -31,7 +36,7 @@ public class Boitier : MonoBehaviour
     private List<string> inputName = new List<string>();
     #endregion
 
-    bool m_wasActive = false;
+    public List<bool> button = new List<bool>() { false, false, false, false, false, false };
 
     // Start is called before the first frame update
     void Start()
@@ -47,34 +52,66 @@ public class Boitier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(inputName[0]))
+        for (int i = 0; i < inputName.Count; i++)
         {
+            if (Input.GetKeyDown(inputName[i]))
+            { 
+                button[i] = true;
+                CheckRooms(globalGroup[i]);
+            }
 
+            if (Input.GetKeyUp(inputName[i]))
+            {
+                SwitchOnOff(button[i], globalGroup[i]);
+                button[i] = false;
+                lastInput[i] = button[i];
+            }
         }
-
-        for (int i = 0 ; i < inputName.Count; i++)
-            Electricity(globalGroup[i], inputName[i]);
-        
     }
 
-    void Electricity (List<Rooms> group, string x)
+    void SwitchOnOff(bool active, List<Rooms> group)
     {
-        if(Input.GetKeyDown(x))
+        active = !active;
+
+        if(active == true)
         {
-            for (int i = 0; i < group.Count; i++)
+            for (int i=0; i < group.Count; i++)
             {
-                group[i].isOn = true;
+                group[i].SwitchLight(true);
             }
-            overload++;
         }
 
-        if (Input.GetKeyUp(x))s
+        else
         {
             for (int i = 0; i < group.Count; i++)
             {
-                group[i].isOn = false;
+                group[i].SwitchLight(false);
             }
-            overload--;
+           
+        }
+    }
+
+    void CheckRooms(List<Rooms> group)
+    {
+        for (int i = 0; i < button.Count; i++)
+        {
+            if (button[i] == true)
+            {
+                if(lastInput[i] != button [i])
+                { 
+                    SwitchOnOff(false, group);
+                    lastInput[i] = button[i];
+                }   
+            }
+
+            else
+            {
+                for (int j = 0; j < group.Count; j++)
+                {
+                    if (group[j].isOn == true && group[j].button > 1)
+                        group[j].isOn = true;
+                }
+            }
         }
     }
 }
