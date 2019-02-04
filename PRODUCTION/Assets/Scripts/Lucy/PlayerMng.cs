@@ -14,6 +14,7 @@ public class PlayerMng : MonoBehaviour
     #region Component
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
+    private Animator anim;
     #endregion
 
     #region State
@@ -31,12 +32,13 @@ public class PlayerMng : MonoBehaviour
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentState != playerState.Climb) ;
+        if (currentState != playerState.Climb) 
             Move();
     }
 
@@ -46,13 +48,17 @@ public class PlayerMng : MonoBehaviour
         {
             case playerState.Idle:
                 {
-
+                    anim.SetBool("Move", false);
+                    anim.SetBool("Idle", true);
+                    
                     break;
                 }
 
             case playerState.Move:
                 {
-                    // anim
+                    anim.SetBool("Idle", false);
+                    anim.SetBool("Move", true);
+                    
                     break;
             
                 }
