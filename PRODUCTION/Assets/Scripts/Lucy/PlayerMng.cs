@@ -111,4 +111,12 @@ public class PlayerMng : MonoBehaviour
             currentRooms = collision.name;
         }
     }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.tag == "InteractableObject")
+        {
+            
+        }
+    }
 }
