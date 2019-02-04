@@ -15,6 +15,10 @@ public class Rooms : MonoBehaviour
     public bool isOn;
     public int button;
 
+    [SerializeField]
+    private int roomNb;
+    public int GetRoomNb() { return roomNb; }
+
     private int stage;
     private string roomName;
 
