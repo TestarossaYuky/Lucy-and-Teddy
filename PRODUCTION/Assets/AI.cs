@@ -42,6 +42,9 @@ public class AI : MonoBehaviour
     [SerializeField] private float speed;
     private Vector2 movement;
 
+    [SerializeField]
+    private float ladderChance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,6 +61,7 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
+        
     }
 
     void MoveTo()
@@ -78,6 +82,7 @@ public class AI : MonoBehaviour
 
     void UpdateDirection()
     {
+        print("test");
         if (currentRoom < myStage.GetNbRooms())
         {
             currentDirection = -1;
@@ -135,17 +140,20 @@ public class AI : MonoBehaviour
 
         if (collision.tag == "Ladder")
         {
-            //RANDOM
-            canClimb = true;
-            ladderTransform = collision.transform;
-            if (isDown)
+            float value = Random.Range(0f, 1f);
+            if (value <= ladderChance)
             {
-                finalLadder = collision.gameObject.transform.GetChild(0).transform;
-            }
+                canClimb = true;
+                ladderTransform = collision.transform;
+                if (isDown)
+                {
+                    finalLadder = collision.gameObject.transform.GetChild(0).transform;
+                }
 
-            else if (isTop)
-            {
-                finalLadder = collision.gameObject.transform.GetChild(1).transform;
+                else if (isTop)
+                {
+                    finalLadder = collision.gameObject.transform.GetChild(1).transform;
+                }
             }
         }
 
@@ -188,6 +196,7 @@ public class AI : MonoBehaviour
         if (collision.tag == "Ladder")
         {
             canClimb = false;
+            finalLadder = null;
         }
     }
 
@@ -205,7 +214,7 @@ public class AI : MonoBehaviour
     }
 
     IEnumerator WaitingTime(float time)
-    {   
+    {
         yield return new WaitForSeconds(time);
 
         if (currentState != State.Move)
@@ -219,56 +228,63 @@ public class AI : MonoBehaviour
         if (canClimb)
         {
             currentPosition.y = gameObject.transform.position.y;
-
-            rgb2D.velocity = Vector2.zero;
-            currentState = State.Climb;
-            this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
-            if (finalLadder != null)
-            {
-                if (isDown)
+     
+                rgb2D.velocity = Vector2.zero;
+                currentState = State.Climb;
+                this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
+                if (finalLadder != null)
                 {
-                    Up();
-                }
-
-                else if (isTop)
-                {
-                    Down();
-                }
-
-                if (isDown)
-                {
-                    if (currentPosition.y >= finalLadder.position.y -0.1)
+                    if (isDown)
                     {
-                        rgb2D.velocity = Vector2.zero;
-                        canClimb = false;
-                        currentState = State.Move;
-                        // check room
+                        Up();
                     }
-                }
 
-                else if (isTop)
-                {
-                    if (currentPosition.y <= finalLadder.position.y + 0.1)
+                    else if (isTop)
                     {
-                        rgb2D.velocity = Vector2.zero;
-                        canClimb = false;
-                        currentState = State.Move;
-                        //check room
+                        Down();
                     }
-                }
-            } 
+
+                    if (isDown)
+                    {
+                        if (currentPosition.y >= finalLadder.position.y + 0.3)
+                        {
+                            rgb2D.velocity = Vector2.zero;
+                            canClimb = false;
+                            currentState = State.Move;
+                            int randomDir = Random.Range(0, 1);
+                            if(randomDir == 0)
+                                currentDirection *= -1;
+                            // check room
+                        }
+                    }
+
+                    else if (isTop)
+                    {
+                        if (currentPosition.y <= finalLadder.position.y + 0.3)
+                        {
+                            rgb2D.velocity = Vector2.zero;
+                            canClimb = false;
+                            currentState = State.Move;
+                            int randomDir = Random.Range(0, 1);
+                            if (randomDir == 0)
+                                currentDirection *= -1;
+                            //check room
+                        }
+                    }
+                
+            }         
         }
+
         else
         {
             isDown = false;
             isTop = false;
-        }
-            
+        }        
     }
 
     private void Up()
     {
-        if (currentPosition.y < finalLadder.position.y - 0.1)
+        if (currentPosition.y < finalLadder.position.y + 0.3)
         {
             Vector2 climb = new Vector2(0, speed);
             rgb2D.velocity = climb * Time.deltaTime;
@@ -277,7 +293,7 @@ public class AI : MonoBehaviour
 
     private void Down()
     {
-        if (currentPosition.y > finalLadder.position.y + 0.1)
+        if (currentPosition.y > finalLadder.position.y + 0.3)
         {
             Vector2 climb = new Vector2(0, -speed);
             rgb2D.velocity = climb * Time.deltaTime;
