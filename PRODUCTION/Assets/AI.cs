@@ -19,11 +19,24 @@ public class AI : MonoBehaviour
     private bool dirTrigger = false;
     private bool waitTrigger = true;
 
+    private Vector3 currentPosition;
+
     #region Component
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
     private Stage myStage;
     private Rooms myRooms;
+    #endregion
+
+    #region Climb
+    private bool canClimb;
+
+    private bool isDown;
+    private bool isTop;
+
+    private Transform finalLadder;
+
+    private Transform ladderTransform;
     #endregion
 
     [SerializeField] private float speed;
@@ -44,6 +57,7 @@ public class AI : MonoBehaviour
     void Update()
     {
         MoveTo();
+        Climb();
     }
 
     void MoveTo()
@@ -118,6 +132,50 @@ public class AI : MonoBehaviour
             if(waitChance <= 2)
                 WaitPattern();
         }
+
+        if (collision.tag == "Ladder")
+        {
+            //RANDOM
+            canClimb = true;
+            ladderTransform = collision.transform;
+            if (isDown)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(0).transform;
+            }
+
+            else if (isTop)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(1).transform;
+            }
+        }
+
+        if (collision.name == "Down")
+        {
+            if (!isTop)
+                isDown = true;
+        }
+
+        if (collision.name == "Top")
+        {
+            if (!isDown)
+                isTop = true;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Ladder")
+        {
+            if (isDown)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(0).transform;
+            }
+
+            else if (isTop)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(1).transform;
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -125,6 +183,11 @@ public class AI : MonoBehaviour
         if(collision.tag == "TriggerRooms")
         {
             dirTrigger = false;
+        }
+
+        if (collision.tag == "Ladder")
+        {
+            canClimb = false;
         }
     }
 
@@ -151,5 +214,73 @@ public class AI : MonoBehaviour
             currentState = State.Idle;
     }
 
+    private void Climb()
+    {
+        if (canClimb)
+        {
+            currentPosition.y = gameObject.transform.position.y;
 
+            rgb2D.velocity = Vector2.zero;
+            currentState = State.Climb;
+            this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
+            if (finalLadder != null)
+            {
+                if (isDown)
+                {
+                    Up();
+                }
+
+                else if (isTop)
+                {
+                    Down();
+                }
+
+                if (isDown)
+                {
+                    if (currentPosition.y >= finalLadder.position.y -0.1)
+                    {
+                        rgb2D.velocity = Vector2.zero;
+                        canClimb = false;
+                        currentState = State.Move;
+                        // check room
+                    }
+                }
+
+                else if (isTop)
+                {
+                    if (currentPosition.y <= finalLadder.position.y + 0.1)
+                    {
+                        rgb2D.velocity = Vector2.zero;
+                        canClimb = false;
+                        currentState = State.Move;
+                        //check room
+                    }
+                }
+            } 
+        }
+        else
+        {
+            isDown = false;
+            isTop = false;
+        }
+            
+    }
+
+    private void Up()
+    {
+        if (currentPosition.y < finalLadder.position.y - 0.1)
+        {
+            Vector2 climb = new Vector2(0, speed);
+            rgb2D.velocity = climb * Time.deltaTime;
+        }
+    }
+
+    private void Down()
+    {
+        if (currentPosition.y > finalLadder.position.y + 0.1)
+        {
+            Vector2 climb = new Vector2(0, -speed);
+            rgb2D.velocity = climb * Time.deltaTime;
+        }
+    }
 }
