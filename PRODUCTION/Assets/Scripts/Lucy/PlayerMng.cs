@@ -9,6 +9,8 @@ public class PlayerMng : MonoBehaviour
     private Vector2 movement;
     [SerializeField]
     private string currentRooms;
+
+    private Vector3 currentPosition;
     #endregion
 
     #region Component
@@ -24,11 +26,24 @@ public class PlayerMng : MonoBehaviour
     private playerState currentState;
     #endregion
 
+    #region Climb
+    private bool canClimb;
+
+    private bool isDown;
+    private bool isTop;
+
+    private Transform finalLadder;
+
+    private Transform ladderTransform;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
         movement = Vector2.zero;
         SetState(playerState.Idle);
+
+        currentPosition = GetComponent<Transform>().position;
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
@@ -38,8 +53,11 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentState != playerState.Climb) 
+        if (currentState != playerState.Climb)
             Move();
+
+        Climb();
+
     }
 
     private void FixedUpdate()
@@ -65,6 +83,7 @@ public class PlayerMng : MonoBehaviour
 
             case playerState.Climb:
                 {
+
                     break;
 
                 }
@@ -104,11 +123,6 @@ public class PlayerMng : MonoBehaviour
         else
             SetState(playerState.Idle);
     }
-        
-    private void CheckRooms()
-    {
-        // tu check collision etcurrentroom =string 
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -116,13 +130,134 @@ public class PlayerMng : MonoBehaviour
         {
             currentRooms = collision.name;
         }
+
+        if(collision.tag == "Ladder")
+        {
+            canClimb = true;
+            ladderTransform = collision.transform;
+            if (isDown)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(0).transform;
+            }
+
+            else if (isTop)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(1).transform;
+            }
+        }
+
+        if (collision.name == "Down")
+        {
+            if(!isTop)
+                isDown = true;  
+        }
+
+        if (collision.name == "Top")
+        {
+            if(!isDown)
+                isTop = true;   
+        }
+
+        
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.tag == "InteractableObject")
         {
+           
             
+        }
+
+        if (collision.tag == "Ladder")
+        {
+            if(isDown)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(0).transform;  
+            }
+
+            else if (isTop)
+            {
+                finalLadder = collision.gameObject.transform.GetChild(1).transform;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.tag == "Ladder")
+        {
+            canClimb = false;
+        }
+    }
+
+    private void Climb()
+    {
+        if(canClimb)
+        {
+            currentPosition.y = gameObject.transform.position.y;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rgb2D.velocity = Vector2.zero;
+                SetState(playerState.Climb);
+                this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
+                if(isDown)
+                {
+                    Up();
+                }
+
+                else if (isTop)
+                {
+                    Down();
+                }
+            }
+
+            if(finalLadder != null)
+            {
+                if (isDown)
+                {
+                    if (currentPosition.y >= finalLadder.position.y)
+                    {
+                        rgb2D.velocity = Vector2.zero;
+                        canClimb = false;
+                        SetState(playerState.Idle);
+                    }
+                }
+
+                else if (isTop)
+                {
+                    if (currentPosition.y <= finalLadder.position.y)
+                    {
+                        rgb2D.velocity = Vector2.zero;
+                        canClimb = false;
+                        SetState(playerState.Idle);
+                    }
+                }
+            } 
+        }
+        else
+        {
+            isDown = false;
+            isTop = false;
+        }
+            
+    }
+
+    private void Up()
+    {      
+        if (currentPosition.y < finalLadder.position.y)
+        {
+            Vector2 climb = new Vector2(0, speed);
+            rgb2D.velocity = climb * Time.deltaTime;
+        }      
+    }
+
+    private void Down()
+    {
+        if (currentPosition.y > finalLadder.position.y)
+        {
+            Vector2 climb = new Vector2(0, -speed);
+            rgb2D.velocity = climb * Time.deltaTime;
         }
     }
 }
