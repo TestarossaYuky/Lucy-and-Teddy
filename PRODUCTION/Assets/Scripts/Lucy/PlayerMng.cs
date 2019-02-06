@@ -9,6 +9,7 @@ public class PlayerMng : MonoBehaviour
     private Vector2 movement;
     [SerializeField]
     private string currentRooms;
+    private int currentStage;
 
     private Vector3 currentPosition;
     #endregion
@@ -129,6 +130,11 @@ public class PlayerMng : MonoBehaviour
         if(collision.tag == "Rooms")
         {
             currentRooms = collision.name;
+        }
+
+        if(collision.tag == "Stage")
+        {
+            currentStage = collision.GetComponent<Stage>().GetStage();
         }
 
         if(collision.tag == "Ladder")
