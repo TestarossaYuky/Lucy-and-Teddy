@@ -9,6 +9,7 @@ public class PlayerMng : MonoBehaviour
     private Vector2 movement;
     [SerializeField]
     private string currentRooms;
+    private int currentStage;
 
     private Vector3 currentPosition;
     #endregion
@@ -131,6 +132,11 @@ public class PlayerMng : MonoBehaviour
             currentRooms = collision.name;
         }
 
+        if(collision.tag == "Stage")
+        {
+            currentStage = collision.GetComponent<Stage>().GetStage();
+        }
+
         if(collision.tag == "Ladder")
         {
             canClimb = true;
@@ -171,15 +177,18 @@ public class PlayerMng : MonoBehaviour
 
         if (collision.tag == "Ladder")
         {
-            if(isDown)
+            if (isDown)
             {
-                finalLadder = collision.gameObject.transform.GetChild(0).transform;  
+                finalLadder = collision.gameObject.transform.GetChild(0).transform;
             }
 
             else if (isTop)
             {
                 finalLadder = collision.gameObject.transform.GetChild(1).transform;
             }
+
+            else
+                finalLadder = null;
         }
     }
 
@@ -216,7 +225,7 @@ public class PlayerMng : MonoBehaviour
             {
                 if (isDown)
                 {
-                    if (currentPosition.y >= finalLadder.position.y)
+                    if (currentPosition.y >= finalLadder.position.y + 0.2)
                     {
                         rgb2D.velocity = Vector2.zero;
                         canClimb = false;
@@ -226,7 +235,7 @@ public class PlayerMng : MonoBehaviour
 
                 else if (isTop)
                 {
-                    if (currentPosition.y <= finalLadder.position.y)
+                    if (currentPosition.y <= finalLadder.position.y + 0.2)
                     {
                         rgb2D.velocity = Vector2.zero;
                         canClimb = false;
@@ -245,7 +254,7 @@ public class PlayerMng : MonoBehaviour
 
     private void Up()
     {      
-        if (currentPosition.y < finalLadder.position.y)
+        if (currentPosition.y < finalLadder.position.y + 0.2)
         {
             Vector2 climb = new Vector2(0, speed);
             rgb2D.velocity = climb * Time.deltaTime;
@@ -254,7 +263,7 @@ public class PlayerMng : MonoBehaviour
 
     private void Down()
     {
-        if (currentPosition.y > finalLadder.position.y)
+        if (currentPosition.y > finalLadder.position.y + 0.2)
         {
             Vector2 climb = new Vector2(0, -speed);
             rgb2D.velocity = climb * Time.deltaTime;

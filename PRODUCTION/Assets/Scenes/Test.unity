@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff0771060374f3248844e23cc1377ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stage: 2
+  stage: 3
 --- !u!4 &179366599 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7785235379475526227, guid: d6c010d96db07ae4997e5db149e2320e,
@@ -1365,7 +1365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff0771060374f3248844e23cc1377ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stage: 2
+  stage: 1
 --- !u!61 &1136091789
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1661,7 +1661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febab16d94f242d46a3ebc29b1a74dfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aiChance: 0.7
+  aiChance: 0.1
   secondChance: 0.2
 --- !u!1 &1330434518
 GameObject:
@@ -1675,7 +1675,7 @@ GameObject:
   - component: {fileID: 1330434521}
   - component: {fileID: 1330434520}
   m_Layer: 0
-  m_Name: Stage 4
+  m_Name: Stage 0
   m_TagString: Stage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1735,7 +1735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff0771060374f3248844e23cc1377ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stage: 2
+  stage: 0
 --- !u!1 &1490498241
 GameObject:
   m_ObjectHideFlags: 0
@@ -2630,7 +2630,7 @@ PrefabInstance:
     - target: {fileID: 1497120461182938567, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}
@@ -2640,7 +2640,7 @@ PrefabInstance:
     - target: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.67
+      value: -0.66
       objectReference: {fileID: 0}
     - target: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}

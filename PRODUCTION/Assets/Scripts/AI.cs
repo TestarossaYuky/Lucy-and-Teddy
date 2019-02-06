@@ -26,6 +26,7 @@ public class AI : MonoBehaviour
     private SpriteRenderer sprRenderer;
     private Stage myStage;
     private Rooms myRooms;
+    private Animator anim;
     #endregion
 
     #region Climb
@@ -53,6 +54,7 @@ public class AI : MonoBehaviour
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -61,6 +63,39 @@ public class AI : MonoBehaviour
         MoveTo();
         Climb();
         
+    }
+
+    private void FixedUpdate()
+    {
+        switch (currentState)
+        {
+            case State.Idle:
+                {
+                    anim.SetBool("Walk", false);
+                    anim.SetBool("Idle", true);
+
+                    break;
+                }
+
+            case State.Move:
+                {
+                    anim.SetBool("Idle", false);
+                    anim.SetBool("Walk", true);
+
+                    break;
+
+                }
+
+            case State.Climb:
+                {
+
+                    break;
+
+                }
+
+
+        }
+
     }
 
     void MoveTo()
@@ -81,7 +116,6 @@ public class AI : MonoBehaviour
 
     void UpdateDirection()
     {
-        print("test");
         if (currentRoom < myStage.GetNbRooms())
         {
             currentDirection = -1;
@@ -144,6 +178,7 @@ public class AI : MonoBehaviour
             if (value <= ladderChance)
             {
                 canClimb = true;
+                collision.GetComponent<Ladder>().SetClimb(true);
                 ladderTransform = collision.transform;
                 if (isDown)
                 {
@@ -299,4 +334,6 @@ public class AI : MonoBehaviour
             rgb2D.velocity = climb * Time.deltaTime;
         }
     }
+
+
 }

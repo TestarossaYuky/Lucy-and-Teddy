@@ -11,7 +11,9 @@ public class Ladder : MonoBehaviour
     private float secondChance = 0.2f;
 
     private bool first = false;
+    private bool climb = false;
     private float baseChance;
+    private List<int> currentStage;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +27,8 @@ public class Ladder : MonoBehaviour
         
     }
 
+   
+
     public float GetAiChance()
     {
         return this.aiChance;
@@ -35,21 +39,40 @@ public class Ladder : MonoBehaviour
         aiChance = chance;
     }
 
+    public void SetClimb(bool x)
+    {
+        climb = x;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if(collision.tag == "Ennemi")
         {
-            if (!first)
-            {
-                SetAiChance(secondChance);
-                first = true;
-            }
-            else
+            if(first)
             {
                 SetAiChance(baseChance);
                 first = false;
+                climb = false;
+            } 
+        }
+        if (collision.tag == "Stage")
+        {
+            currentStage.Add(collision.GetComponent<Stage>().GetStage());
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Ennemi")
+        {
+            if (!first)
+            {
+                if (climb)
+                {
+                    SetAiChance(secondChance);
+                }
             }
-                
         }
     }
 }
