@@ -54,6 +54,7 @@ public class AI : MonoBehaviour
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -70,7 +71,7 @@ public class AI : MonoBehaviour
         {
             case State.Idle:
                 {
-                    anim.SetBool("Move", false);
+                    anim.SetBool("Walk", false);
                     anim.SetBool("Idle", true);
 
                     break;
@@ -79,7 +80,7 @@ public class AI : MonoBehaviour
             case State.Move:
                 {
                     anim.SetBool("Idle", false);
-                    anim.SetBool("Move", true);
+                    anim.SetBool("Walk", true);
 
                     break;
 

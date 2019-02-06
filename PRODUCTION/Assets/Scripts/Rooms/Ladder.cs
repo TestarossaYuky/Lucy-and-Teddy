@@ -71,12 +71,8 @@ public class Ladder : MonoBehaviour
                 if (climb)
                 {
                     SetAiChance(secondChance);
-                    print("here");
                 }
-
             }
-           
-
         }
     }
 }
