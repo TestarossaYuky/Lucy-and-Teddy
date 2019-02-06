@@ -1,13 +1,20 @@
 fileFormatVersion: 2
-guid: 7195495d276fda84ab098efcc39e64b3
+guid: a1377a9c6b13ab5409ee04458647a267
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Heinrich_Walking_0
-    21300002: Heinrich_Walking_1
-    21300004: Heinrich_Walking_2
-    21300006: Heinrich_Walking_3
-    21300008: Heinrich_Walking_4
-    21300010: Heinrich_Walking_5
+    21300000: Heinrich_Walking 1_0
+    21300002: Heinrich_Walking 1_1
+    21300004: Heinrich_Walking 1_2
+    21300006: Heinrich_Walking 1_3
+    21300008: Heinrich_Walking 1_4
+    21300010: Heinrich_Walking 1_5
+    21300012: Heinrich_Walking 1_6
+    21300014: Heinrich_Walking 1_7
+    21300016: Heinrich_Walking 1_8
+    21300018: Heinrich_Walking 1_9
+    21300020: Heinrich_Walking 1_10
+    21300022: Heinrich_Walking 1_11
+    21300024: Heinrich_Walking 1_12
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -90,121 +97,181 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Heinrich_Walking_0
+      name: Heinrich_Walking 1_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 27
-        width: 322
-        height: 564
+        x: 75
+        y: 37
+        width: 245
+        height: 573
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 301e96c886c385c4e8485cad67ecc7ee
+      spriteID: e6547fcc9e7c2d7438a90bfe73380ae6
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heinrich_Walking_1
+      name: Heinrich_Walking 1_1
       rect:
         serializedVersion: 2
-        x: 369
-        y: 28
-        width: 326
+        x: 380
+        y: 29
+        width: 325
         height: 568
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 742caedb854d2b94bad5f13c78da4716
+      spriteID: 48d6153279d42354baf9c09c4da3ec6d
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heinrich_Walking_2
+      name: Heinrich_Walking 1_2
       rect:
         serializedVersion: 2
-        x: 780
+        x: 721
+        y: 31
+        width: 342
+        height: 555
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bccb8761bb3cd24a927168e41f6682e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_4
+      rect:
+        serializedVersion: 2
+        x: 1077
+        y: 31
+        width: 329
+        height: 570
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b64ecbad7e6dbe344883e965c9438af3
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_5
+      rect:
+        serializedVersion: 2
+        x: 1493
         y: 38
-        width: 249
-        height: 562
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bdaac909c16e5c1408e30464f7b3a355
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heinrich_Walking_3
-      rect:
-        serializedVersion: 2
-        x: 1118
-        y: 42
-        width: 298
-        height: 565
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 365aabdc183328948a76a6cd4e461982
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heinrich_Walking_4
-      rect:
-        serializedVersion: 2
-        x: 1442
-        y: 35
-        width: 332
-        height: 561
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dc160886103b50542bff57f64246a8e1
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heinrich_Walking_5
-      rect:
-        serializedVersion: 2
-        x: 1850
-        y: 33
-        width: 247
+        width: 253
         height: 567
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2d450831a5902f4aadbf912c6e03f40
+      spriteID: 5a10076e178062e40beeeb5b0e0ad2b0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_6
+      rect:
+        serializedVersion: 2
+        x: 1863
+        y: 37
+        width: 241
+        height: 573
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aec4542439a5dd46b29f3d4114f0b72
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_7
+      rect:
+        serializedVersion: 2
+        x: 2189
+        y: 43
+        width: 302
+        height: 569
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5e1a9e1eb99ee24996f53e35ffe4cfd
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_8
+      rect:
+        serializedVersion: 2
+        x: 2501
+        y: 37
+        width: 333
+        height: 566
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 888681e5b26ef8a4cae7b0c03e2e513c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heinrich_Walking 1_9
+      rect:
+        serializedVersion: 2
+        x: 2923
+        y: 35
+        width: 252
+        height: 570
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bc0c1ea65609844681b92f9366bd2f2
       vertices: []
       indices: 
       edges: []
@@ -212,7 +279,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1aa5bb0819ed9ba4590de634e0f2f940
+    spriteID: a3c3f62cb76702e4b96648ec59605b76
     vertices: []
     indices: 
     edges: []

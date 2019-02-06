@@ -42,7 +42,6 @@ public class AI : MonoBehaviour
     [SerializeField] private float speed;
     private Vector2 movement;
 
-    [SerializeField]
     private float ladderChance;
 
     // Start is called before the first frame update
@@ -141,6 +140,7 @@ public class AI : MonoBehaviour
         if (collision.tag == "Ladder")
         {
             float value = Random.Range(0f, 1f);
+            ladderChance = collision.GetComponent<Ladder>().GetAiChance();
             if (value <= ladderChance)
             {
                 canClimb = true;
