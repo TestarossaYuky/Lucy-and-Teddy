@@ -10,16 +10,25 @@ public class AI : MonoBehaviour
     [SerializeField]
     enum Infiltration { Undetected, Detected, Trigger}
 
+    [SerializeField]
     private State currentState;
 
+    [SerializeField]
+    private Infiltration currentInfiltration;
+
     private float currentDirection;
-    private int currentFloor = 0;
-    private int currentRoom = 0;
+    private int currentFloor;
+    private int currentRoom;
 
     private bool dirTrigger = false;
     private bool waitTrigger = true;
 
     private Vector3 currentPosition;
+
+    private InteractableObject myObject;
+    private int objectStage;
+    private int objectRoom;
+
 
     #region Component
     private Rigidbody2D rgb2D;
@@ -49,6 +58,7 @@ public class AI : MonoBehaviour
     void Start()
     {
         currentState = State.Move;
+        currentInfiltration = Infiltration.Undetected;
         movement = Vector2.zero;
         currentDirection = -1;
 
@@ -62,7 +72,40 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
-        
+
+
+        if (currentInfiltration == Infiltration.Detected)
+        {
+            
+            if (currentFloor != objectStage)
+            {
+
+            }
+
+            else
+            {
+
+                if (objectRoom > currentRoom)
+                    currentDirection = 1;
+                else if (objectRoom < currentRoom)
+                    currentDirection = -1;
+                else if (objectRoom == currentRoom)
+                {
+
+                    if (myObject.transform.position.x > this.gameObject.transform.position.x)
+                        currentDirection = 1;
+
+                    else
+                        currentDirection = -1;
+                }
+                //else
+                //check petite fille direction
+                //check la direction donc les salles
+            }
+            //check sa room
+            //check la room de destination
+
+        }
     }
 
     private void FixedUpdate()
@@ -96,6 +139,17 @@ public class AI : MonoBehaviour
 
         }
 
+
+    }
+
+    void SetState(State state)
+    {
+        currentState = state;
+    }
+
+    void SetInfiltration(Infiltration infiltration)
+    {
+        currentInfiltration = infiltration;
     }
 
     void MoveTo()
@@ -111,7 +165,7 @@ public class AI : MonoBehaviour
         if (currentState == State.Idle)
             rgb2D.velocity = Vector2.zero;
 
-        Debug.Log("Current State: " + currentState.ToString());
+        //Debug.Log("Current State: " + currentState.ToString());
     }
 
     void UpdateDirection()
@@ -203,6 +257,30 @@ public class AI : MonoBehaviour
             if (!isDown)
                 isTop = true;
         }
+
+        if(collision.name == "Wave")
+        {
+
+            //objectStage = collision.GetComponent<Wave>().GetStage();
+            //objectRoom = collision.GetComponentInParent<InteractableObject>().GetRoom();
+            //myObject = collision.GetComponentInParent<InteractableObject>();
+
+            //print("Stage : " + objectStage);
+            //SetInfiltration(Infiltration.Detected);
+            
+        }
+
+        if(collision.tag == "Object")
+        {
+            //if(collision.GetComponent<InteractableObject>().GetIsUse() == true)
+            //{
+            //    collision.GetComponent<InteractableObject>().SetIsUse(false);
+            //    SetInfiltration(Infiltration.Undetected);
+               
+            //    //objectRoom = 0;
+            //    myObject = null;
+            //}
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -233,6 +311,8 @@ public class AI : MonoBehaviour
             canClimb = false;
             finalLadder = null;
         }
+
+     
     }
 
     private void WaitPattern()
@@ -253,9 +333,9 @@ public class AI : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         if (currentState != State.Move)
-            currentState = State.Move;
+            SetState(State.Move);
         else
-            currentState = State.Idle;
+            SetState(State.Idle);
     }
 
     private void Climb()
@@ -264,9 +344,9 @@ public class AI : MonoBehaviour
         {
             currentPosition.y = gameObject.transform.position.y;
      
-                rgb2D.velocity = Vector2.zero;
-                currentState = State.Climb;
-                this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
+            rgb2D.velocity = Vector2.zero;
+            SetState(State.Climb);
+            this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
                 if (finalLadder != null)
                 {
                     if (isDown)

@@ -17,7 +17,7 @@ public class Rooms : MonoBehaviour
 
     [SerializeField]
     private int roomNb;
-    public int GetRoomNb() { return roomNb; }
+    
 
     private int stage;
     private string roomName;
@@ -44,6 +44,11 @@ public class Rooms : MonoBehaviour
             spr.sprite = Dark;
         else
             spr.sprite = Light;
+    }
+
+    public int GetRoomNb()
+    {
+        return roomNb;
     }
 
     public void SwitchLight(bool OnOff)

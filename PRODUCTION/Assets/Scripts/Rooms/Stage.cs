@@ -5,7 +5,7 @@ using UnityEngine;
 public class Stage : MonoBehaviour
 {
     [SerializeField]
-    private int stage;
+    public int stage;
     
 
     private int nbRooms;
