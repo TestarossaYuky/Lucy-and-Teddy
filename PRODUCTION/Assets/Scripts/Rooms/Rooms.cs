@@ -51,6 +51,11 @@ public class Rooms : MonoBehaviour
         return roomNb;
     }
 
+    public bool GetIsOn()
+    {
+        return this.isOn;
+    }
+
     public void SwitchLight(bool OnOff)
     {
 

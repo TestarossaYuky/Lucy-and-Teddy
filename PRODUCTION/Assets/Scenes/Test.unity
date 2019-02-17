@@ -1021,7 +1021,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 2.13
+  m_Radius: 2.3
 --- !u!114 &753164340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2169,7 +2169,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821456686}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: -0.61, z: 0.027851127}
+  m_LocalPosition: {x: 1.4, y: -0.58, z: 0.027851127}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2427,7 +2427,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874387558}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.483, y: -0.558, z: -0.46846464}
+  m_LocalPosition: {x: 0.69, y: 1.48, z: -0.46846464}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 753164338}
@@ -2448,6 +2448,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentStage: 0
   currentRoom: 0
+  haveElectricity: 0
+  isUse: 0
 --- !u!50 &1874387563
 Rigidbody2D:
   serializedVersion: 4
@@ -2854,6 +2856,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3488935767823402366, guid: 609c75c6c1fbeb943b5671bfc217e218,
         type: 3}
+      propertyPath: group2.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3488935767823402366, guid: 609c75c6c1fbeb943b5671bfc217e218,
+        type: 3}
       propertyPath: group1.Array.data[0]
       value: 
       objectReference: {fileID: 1295704140}
@@ -2875,6 +2882,11 @@ PrefabInstance:
     - target: {fileID: 3488935767823402366, guid: 609c75c6c1fbeb943b5671bfc217e218,
         type: 3}
       propertyPath: group3.Array.data[1]
+      value: 
+      objectReference: {fileID: 1850609136}
+    - target: {fileID: 3488935767823402366, guid: 609c75c6c1fbeb943b5671bfc217e218,
+        type: 3}
+      propertyPath: group2.Array.data[1]
       value: 
       objectReference: {fileID: 1850609136}
     m_RemovedComponents: []

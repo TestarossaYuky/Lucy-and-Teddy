@@ -9,7 +9,10 @@ public class InteractableObject : MonoBehaviour
     public int currentStage;
     public int currentRoom;
 
-    private bool isUse = false;
+    private Rooms myRooms;
+
+    public bool haveElectricity = false;
+    public bool isUse = false;
 
     private CircleCollider2D waveCollider;
     private BoxCollider2D itemCollider;
@@ -24,15 +27,30 @@ public class InteractableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
+        haveElectricity = myRooms.GetIsOn();
+        if (haveElectricity)
         {
-            ActiveWave();
-        }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                ActiveWave();
+                SetIsUse(true);
+            }
 
-        if(Input.GetKeyUp(KeyCode.A))
-        {
-            ActiveWave();
+            if (Input.GetKeyUp(KeyCode.A))
+            {
+                ActiveWave();
+            }
+
         }
+        else
+        {
+            SetIsUse(false);
+         
+            waveCollider.enabled = false;
+        }
+            
+      
+       
     }
 
     void ActiveWave()
@@ -53,9 +71,12 @@ public class InteractableObject : MonoBehaviour
 
         if (collision.tag == "Rooms")
         {
-            currentRoom = collision.GetComponent<Rooms>().GetRoomNb();
+            myRooms = collision.GetComponent<Rooms>();
+            currentRoom = myRooms.GetRoomNb();
+            
         }
     }
+
 
     public int GetRoom()
     {
@@ -70,11 +91,6 @@ public class InteractableObject : MonoBehaviour
     public void SetIsUse(bool x)
     {
         isUse = x;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        
     }
 
     public int GetStage()

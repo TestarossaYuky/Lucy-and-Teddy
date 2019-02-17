@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class Wave : MonoBehaviour
 {
-    //private bool isActive = false;
-
-
-    //private InteractableObject myInteract;
-    //private int myStage;
-
+    private AI myAI;
 
     //// Start is called before the first frame update
     void Start()
@@ -21,17 +16,19 @@ public class Wave : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
-
+    
+        
 
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
+    
         if (collision.gameObject.tag == "Ennemi")
         {
-            print("here");
+            AI myAI = collision.gameObject.GetComponent<AI>();
+            myAI.SetMyObject(GetComponentInParent<InteractableObject>());
+            myAI.SetInfiltration(AI.Infiltration.Detected);
         }
     }
 
