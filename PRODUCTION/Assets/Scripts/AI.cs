@@ -5,21 +5,30 @@ using UnityEngine;
 public class AI : MonoBehaviour
 {
     [SerializeField]
-    enum State { Idle = 0, Move, Climb }
+    public enum State { Idle = 0, Move, Climb }
 
     [SerializeField]
-    enum Infiltration { Undetected, Detected, Trigger}
+    public enum Infiltration { Undetected, Detected, Trigger}
 
+    [SerializeField]
     private State currentState;
 
+    [SerializeField]
+    private Infiltration currentInfiltration;
+
     private float currentDirection;
-    private int currentFloor = 0;
-    private int currentRoom = 0;
+    private int currentFloor;
+    private int currentRoom;
 
     private bool dirTrigger = false;
     private bool waitTrigger = true;
 
     private Vector3 currentPosition;
+
+    private InteractableObject myObject;
+    private int objectStage;
+    private int objectRoom;
+
 
     #region Component
     private Rigidbody2D rgb2D;
@@ -49,6 +58,7 @@ public class AI : MonoBehaviour
     void Start()
     {
         currentState = State.Move;
+        currentInfiltration = Infiltration.Undetected;
         movement = Vector2.zero;
         currentDirection = -1;
 
@@ -62,7 +72,40 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
-        
+
+
+        //if (currentInfiltration == Infiltration.Detected)
+        //{
+            
+        //    if (currentFloor != objectStage)
+        //    {
+
+        //    }
+
+        //    else
+        //    {
+
+        //        if (objectRoom > currentRoom)
+        //            currentDirection = 1;
+        //        else if (objectRoom < currentRoom)
+        //            currentDirection = -1;
+        //        else if (objectRoom == currentRoom)
+        //        {
+
+        //            if (myObject.transform.position.x > this.gameObject.transform.position.x)
+        //                currentDirection = 1;
+
+        //            else
+        //                currentDirection = -1;
+        //        }
+        //        //else
+        //        //check petite fille direction
+        //        //check la direction donc les salles
+        //    }
+        //    //check sa room
+        //    //check la room de destination
+
+        //}
     }
 
     private void FixedUpdate()
@@ -96,6 +139,69 @@ public class AI : MonoBehaviour
 
         }
 
+
+        switch (currentInfiltration)
+        {
+            case Infiltration.Detected:
+                {
+                    if(myObject.GetIsUse() == false)
+                    {
+                        SetInfiltration(Infiltration.Undetected);
+                    }
+
+                    if(currentFloor == myObject.GetStage())
+                    {
+                        if (this.transform.position.x <= myObject.GetComponent<Transform>().position.x)
+                        {
+                            this.SetDirection(1);
+
+                        }
+                        else
+                        {
+                            this.SetDirection(-1);
+                        }
+                    }
+
+                    else if(currentFloor > myObject.GetStage())
+                    {
+                        //check l'échelle la plus proche
+                    }
+
+                    break;
+                }
+
+            case Infiltration.Undetected:
+                {
+                   
+
+                    break;
+
+                }
+
+            case Infiltration.Trigger:
+                {
+
+                    break;
+
+                }
+
+
+        }
+    }
+
+    void SetState(State state)
+    {
+        currentState = state;
+    }
+
+    public void SetInfiltration(Infiltration infiltration)
+    {
+        currentInfiltration = infiltration;
+    }
+
+    public void SetMyObject(InteractableObject obj)
+    {
+        myObject = obj;
     }
 
     void MoveTo()
@@ -111,7 +217,7 @@ public class AI : MonoBehaviour
         if (currentState == State.Idle)
             rgb2D.velocity = Vector2.zero;
 
-        Debug.Log("Current State: " + currentState.ToString());
+        //Debug.Log("Current State: " + currentState.ToString());
     }
 
     void UpdateDirection()
@@ -141,9 +247,29 @@ public class AI : MonoBehaviour
         this.rgb2D.velocity = movement * Time.deltaTime;
     }
 
+    public void SetDirection(int dir)
+    {
+        currentDirection = dir;
+    }
+
+    public int GetStage()
+    {
+        return currentFloor;
+    }
+
+    public float GetLadderChance()
+    {
+        return ladderChance;
+    }
+
+    public void SetLadderChance(float chance)
+    {
+        ladderChance = chance;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Stage")
+        if(collision.tag == "Stage" && currentState != State.Climb)
         {
             myStage = collision.GetComponent<Stage>();
             currentFloor = myStage.GetStage();
@@ -171,7 +297,7 @@ public class AI : MonoBehaviour
                 WaitPattern();
         }
 
-        if (collision.tag == "Ladder")
+        if (collision.tag == "Ladder" && currentInfiltration != Infiltration.Detected)
         {
             float value = Random.Range(0f, 1f);
             ladderChance = collision.GetComponent<Ladder>().GetAiChance();
@@ -203,6 +329,63 @@ public class AI : MonoBehaviour
             if (!isDown)
                 isTop = true;
         }
+
+       
+
+        if(currentInfiltration == Infiltration.Detected)
+        {
+            if (collision.tag == "Object")
+            {
+
+                if (collision.GetComponent<InteractableObject>().GetIsUse() == true)
+                {
+                    StartCoroutine(WaitingTime(0));
+                    StartCoroutine(WaitingTime(1));
+                    int test = Random.Range(0, 1);
+                    if (test == 0)
+                        SetDirection(1);
+                    else
+                        SetDirection(-1);
+
+                    collision.GetComponent<InteractableObject>().SetIsUse(false);
+
+                    SetInfiltration(Infiltration.Undetected);
+
+                }
+
+            }
+
+            if (myObject.GetStage() > currentFloor)
+            {
+
+                if (collision.tag == "Ladder")
+                {
+                    canClimb = true;
+                    collision.GetComponent<Ladder>().SetClimb(true);
+                    ladderTransform = collision.transform;
+                    if (isDown)
+                    {
+                        finalLadder = collision.gameObject.transform.GetChild(0).transform;
+                    }
+                }
+            }
+
+            else if (myObject.GetStage() < currentFloor)
+            {
+                if (collision.tag == "Ladder")
+                {
+                    canClimb = true;
+                    collision.GetComponent<Ladder>().SetClimb(true);
+                    ladderTransform = collision.transform;
+                    if (isTop)
+                    {
+                        finalLadder = collision.gameObject.transform.GetChild(1).transform;
+                    }
+                }
+            }
+
+            
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -219,6 +402,13 @@ public class AI : MonoBehaviour
                 finalLadder = collision.gameObject.transform.GetChild(1).transform;
             }
         }
+
+        if (collision.tag == "Stage" && currentState != State.Climb)
+        {
+            myStage = collision.GetComponent<Stage>();
+            currentFloor = myStage.GetStage();
+
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -233,12 +423,14 @@ public class AI : MonoBehaviour
             canClimb = false;
             finalLadder = null;
         }
+
+     
     }
 
     private void WaitPattern()
     {
         
-        if(currentState == State.Move)
+        if(currentState == State.Move && currentInfiltration != Infiltration.Detected)
         {
             float waiting = Random.Range(0.5f, 2.5f);
             StartCoroutine(WaitingTime(waiting));
@@ -253,9 +445,9 @@ public class AI : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         if (currentState != State.Move)
-            currentState = State.Move;
+            SetState(State.Move);
         else
-            currentState = State.Idle;
+            SetState(State.Idle);
     }
 
     private void Climb()
@@ -264,9 +456,9 @@ public class AI : MonoBehaviour
         {
             currentPosition.y = gameObject.transform.position.y;
      
-                rgb2D.velocity = Vector2.zero;
-                currentState = State.Climb;
-                this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
+            rgb2D.velocity = Vector2.zero;
+            SetState(State.Climb);
+            this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
                 if (finalLadder != null)
                 {
                     if (isDown)

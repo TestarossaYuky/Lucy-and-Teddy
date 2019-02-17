@@ -24,16 +24,20 @@ public class Ladder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-   
+
 
     public float GetAiChance()
     {
         return this.aiChance;
     }
 
+    //public int GetStage()
+    //{
+    //    return this.currentStage;
+    //}
     public void SetAiChance(float chance)
     {
         aiChance = chance;

@@ -4,33 +4,97 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-    public bool isInteractable = false;
+
+
+    public int currentStage;
+    public int currentRoom;
+
+    private Rooms myRooms;
+
+    public bool haveElectricity = false;
+    public bool isUse = false;
+
+    private CircleCollider2D waveCollider;
+    private BoxCollider2D itemCollider;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        waveCollider = GetComponentInChildren<CircleCollider2D>();
+        itemCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        haveElectricity = myRooms.GetIsOn();
+        if (haveElectricity)
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                ActiveWave();
+                SetIsUse(true);
+            }
+
+            if (Input.GetKeyUp(KeyCode.A))
+            {
+                ActiveWave();
+            }
+
+        }
+        else
+        {
+            SetIsUse(false);
+         
+            waveCollider.enabled = false;
+        }
+            
+      
+       
+    }
+
+    void ActiveWave()
+    {
+        if (waveCollider.enabled == false)
+            waveCollider.enabled = true;
+        else
+            waveCollider.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        
+        if(collision.tag == "Stage")
         {
-            isInteractable = true;
+            currentStage = collision.GetComponent<Stage>().GetStage();
+        }
+
+        if (collision.tag == "Rooms")
+        {
+            myRooms = collision.GetComponent<Rooms>();
+            currentRoom = myRooms.GetRoomNb();
+            
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+
+    public int GetRoom()
     {
-        if(collision.gameObject.tag == "Player")
-        {
-            isInteractable = false;
-        }
+        return currentRoom;
+    }
+
+    public bool GetIsUse()
+    {
+        return isUse;
+    }
+
+    public void SetIsUse(bool x)
+    {
+        isUse = x;
+    }
+
+    public int GetStage()
+    {
+        return currentStage;
     }
 }
