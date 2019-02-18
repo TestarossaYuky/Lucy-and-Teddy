@@ -11,6 +11,7 @@ TagManager:
   - Ennemi
   - Ladder
   - Object
+  - TP
   layers:
   - Default
   - TransparentFX
