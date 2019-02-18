@@ -12,6 +12,8 @@ public class PlayerMng : MonoBehaviour
     private int currentStage;
 
     private bool canTP = false;
+    private bool canHide = false;
+    private bool isHide = false;
 
     private Vector3 currentPosition;
     #endregion
@@ -22,6 +24,7 @@ public class PlayerMng : MonoBehaviour
     private Animator anim;
 
     private GameObject currentGate;
+    private GameObject currentHide;
     #endregion
 
     #region State
@@ -46,6 +49,7 @@ public class PlayerMng : MonoBehaviour
     void Start()
     {
         currentGate = null;
+        currentHide = null;
         movement = Vector2.zero;
         SetState(playerState.Idle);
 
@@ -59,11 +63,12 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentState != playerState.Climb)
+        if (currentState != playerState.Climb && currentState != playerState.Hide)
             Move();
 
         Climb();
         Teleport();
+        Hide();
     }
 
     private void FixedUpdate()
@@ -72,6 +77,7 @@ public class PlayerMng : MonoBehaviour
         {
             case playerState.Idle:
                 {
+                    this.sprRenderer.enabled = true;
                     anim.SetBool("Move", false);
                     anim.SetBool("Idle", true);
                     
@@ -80,6 +86,7 @@ public class PlayerMng : MonoBehaviour
 
             case playerState.Move:
                 {
+                    this.sprRenderer.enabled = true;
                     anim.SetBool("Idle", false);
                     anim.SetBool("Move", true);
                     
@@ -96,6 +103,7 @@ public class PlayerMng : MonoBehaviour
 
             case playerState.Hide:
                 {
+                    this.sprRenderer.enabled = false;
                     break;
                 }
 
@@ -189,15 +197,20 @@ public class PlayerMng : MonoBehaviour
                 currentGate = tp.enter1;
             }
         }
+
+        if(collision.tag == "Hide")
+        {
+            canHide = true;
+
+            if(canHide)
+            {
+                currentHide = collision.gameObject;
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.tag == "InteractableObject")
-        {
-           
-            
-        }
 
         if (collision.tag == "Ladder")
         {
@@ -222,6 +235,38 @@ public class PlayerMng : MonoBehaviour
         {
             canClimb = false;
         }
+
+        if (collision.tag == "Hide")
+        {
+            canHide = false;
+        }
+    }
+
+    private void Hide()
+    {
+        if(canHide)
+        {
+            if(!isHide)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    rgb2D.velocity = Vector2.zero;
+                    isHide = true;
+                    SetState(playerState.Hide);
+                }
+            }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    rgb2D.velocity = Vector2.zero;
+                    isHide = false;
+                    SetState(playerState.Idle);
+                }
+
+            }
+        }
+
     }
 
     private void Teleport()
