@@ -17,6 +17,10 @@ public class InteractableObject : MonoBehaviour
     private CircleCollider2D waveCollider;
     private BoxCollider2D itemCollider;
     private SpriteRenderer spr;
+    private Color baseColor;
+
+    [SerializeField]
+    private string inputName;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,7 @@ public class InteractableObject : MonoBehaviour
         waveCollider = GetComponentInChildren<CircleCollider2D>();
         itemCollider = GetComponent<BoxCollider2D>();
         spr = GetComponent<SpriteRenderer>();
+        baseColor = spr.color;
     }
 
     // Update is called once per frame
@@ -32,16 +37,20 @@ public class InteractableObject : MonoBehaviour
         haveElectricity = myRooms.GetIsOn();
         if (haveElectricity)
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if(inputName != null)
             {
-                ActiveWave();
-                SetIsUse(true);
-            }
+                if (Input.GetKeyDown(inputName))
+                {
+                    ActiveWave();
+                    SetIsUse(true);
+                }
 
-            if (Input.GetKeyUp(KeyCode.A))
-            {
-                ActiveWave();
+                if (Input.GetKeyUp(inputName))
+                {
+                    ActiveWave();
+                }
             }
+            
 
         }
         else
@@ -53,10 +62,18 @@ public class InteractableObject : MonoBehaviour
 
         if (isUse)
         {
-            spr.color = Color.red;
+            if (inputName == "a")
+                spr.color = Color.red;
+            else if (inputName == "w")
+                spr.color = Color.green;
+            else if (inputName == "x")
+                spr.color = Color.blue;
+            else if (inputName == "c")
+                spr.color = Color.yellow;
         }
         else
-            spr.color = Color.white;
+            spr.color = baseColor;
+       
        
     }
 
