@@ -2303,31 +2303,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aiChance: 0.3
   secondChance: 0.7
---- !u!1 &1497120461182938567 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1497120461182938567, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
-    type: 3}
-  m_PrefabInstance: {fileID: 1497120462415311209}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1497120461182938568
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1497120461182938567}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2edf2982f21173541abee668d8f02010, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1497120462415311209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2339,16 +2314,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lucy
-      objectReference: {fileID: 0}
-    - target: {fileID: 1497120461182938567, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
-        type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 1497120461182938567, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}
@@ -2403,11 +2368,6 @@ PrefabInstance:
     - target: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1497120461182938584, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
-        type: 3}
-      propertyPath: m_Constraints
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
