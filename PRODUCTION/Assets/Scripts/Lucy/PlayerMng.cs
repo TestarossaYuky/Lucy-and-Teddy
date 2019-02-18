@@ -222,6 +222,11 @@ public class PlayerMng : MonoBehaviour
         {
             canClimb = false;
         }
+
+        if (collision.tag == "TP")
+        {
+            canTP = false;
+        }
     }
 
     private void Teleport()
