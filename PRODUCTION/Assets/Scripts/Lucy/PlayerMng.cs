@@ -11,6 +11,8 @@ public class PlayerMng : MonoBehaviour
     private string currentRooms;
     private int currentStage;
 
+    private bool canTP = false;
+
     private Vector3 currentPosition;
     #endregion
 
@@ -18,6 +20,8 @@ public class PlayerMng : MonoBehaviour
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
     private Animator anim;
+
+    private GameObject currentGate;
     #endregion
 
     #region State
@@ -41,6 +45,7 @@ public class PlayerMng : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentGate = null;
         movement = Vector2.zero;
         SetState(playerState.Idle);
 
@@ -58,7 +63,7 @@ public class PlayerMng : MonoBehaviour
             Move();
 
         Climb();
-
+        Teleport();
     }
 
     private void FixedUpdate()
@@ -169,6 +174,21 @@ public class PlayerMng : MonoBehaviour
             Destroy(this.gameObject);
         }
         
+        if(collision.tag == "TP")
+        {
+            canTP = true;
+
+            if (collision.name == "1" && canTP == true)
+            {
+                Teleport tp = collision.GetComponentInParent<Teleport>();
+                currentGate = tp.enter2;
+            }
+            else if (collision.name == "2" && canTP == true)
+            {
+                Teleport tp = collision.GetComponentInParent<Teleport>();
+                currentGate = tp.enter1;
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -201,6 +221,18 @@ public class PlayerMng : MonoBehaviour
         if(collision.tag == "Ladder")
         {
             canClimb = false;
+        }
+    }
+
+    private void Teleport()
+    {
+        if(canTP)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                this.transform.position = currentGate.transform.position;
+                canTP = false;
+            }
         }
     }
 
