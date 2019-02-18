@@ -164,6 +164,10 @@ public class PlayerMng : MonoBehaviour
                 isTop = true;   
         }
 
+        if(collision.tag == "Ennemi")
+        {
+            Destroy(this.gameObject);
+        }
         
     }
 

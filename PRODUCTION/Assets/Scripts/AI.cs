@@ -60,7 +60,7 @@ public class AI : MonoBehaviour
         currentState = State.Move;
         currentInfiltration = Infiltration.Undetected;
         movement = Vector2.zero;
-        currentDirection = -1;
+        currentDirection = 1;
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
@@ -72,40 +72,6 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
-
-
-        //if (currentInfiltration == Infiltration.Detected)
-        //{
-            
-        //    if (currentFloor != objectStage)
-        //    {
-
-        //    }
-
-        //    else
-        //    {
-
-        //        if (objectRoom > currentRoom)
-        //            currentDirection = 1;
-        //        else if (objectRoom < currentRoom)
-        //            currentDirection = -1;
-        //        else if (objectRoom == currentRoom)
-        //        {
-
-        //            if (myObject.transform.position.x > this.gameObject.transform.position.x)
-        //                currentDirection = 1;
-
-        //            else
-        //                currentDirection = -1;
-        //        }
-        //        //else
-        //        //check petite fille direction
-        //        //check la direction donc les salles
-        //    }
-        //    //check sa room
-        //    //check la room de destination
-
-        //}
     }
 
     private void FixedUpdate()
@@ -180,7 +146,7 @@ public class AI : MonoBehaviour
 
             case Infiltration.Trigger:
                 {
-
+                    
                     break;
 
                 }
@@ -286,7 +252,6 @@ public class AI : MonoBehaviour
         if(collision.tag == "TriggerRooms")
         {
             dirTrigger = true;
-            
         }
 
         if(collision.tag == "TriggerWait" && waitTrigger == false)
@@ -336,7 +301,6 @@ public class AI : MonoBehaviour
         {
             if (collision.tag == "Object")
             {
-
                 if (collision.GetComponent<InteractableObject>().GetIsUse() == true)
                 {
                     StartCoroutine(WaitingTime(0));
@@ -348,9 +312,7 @@ public class AI : MonoBehaviour
                         SetDirection(-1);
 
                     collision.GetComponent<InteractableObject>().SetIsUse(false);
-
                     SetInfiltration(Infiltration.Undetected);
-
                 }
 
             }

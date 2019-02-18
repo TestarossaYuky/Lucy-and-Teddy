@@ -16,12 +16,14 @@ public class InteractableObject : MonoBehaviour
 
     private CircleCollider2D waveCollider;
     private BoxCollider2D itemCollider;
+    private SpriteRenderer spr;
 
     // Start is called before the first frame update
     void Start()
     {
         waveCollider = GetComponentInChildren<CircleCollider2D>();
         itemCollider = GetComponent<BoxCollider2D>();
+        spr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -48,8 +50,13 @@ public class InteractableObject : MonoBehaviour
          
             waveCollider.enabled = false;
         }
-            
-      
+
+        if (isUse)
+        {
+            spr.color = Color.red;
+        }
+        else
+            spr.color = Color.white;
        
     }
 
