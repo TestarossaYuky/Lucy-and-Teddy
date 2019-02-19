@@ -12,6 +12,7 @@ TagManager:
   - Ladder
   - Object
   - TP
+  - Hide
   layers:
   - Default
   - TransparentFX
