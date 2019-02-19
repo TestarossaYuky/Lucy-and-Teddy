@@ -25,6 +25,8 @@ public class PlayerMng : MonoBehaviour
 
     private GameObject currentGate;
     private GameObject currentHide;
+
+    private SpriteRenderer sprIcone;
     #endregion
 
     #region State
@@ -58,6 +60,7 @@ public class PlayerMng : MonoBehaviour
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        sprIcone = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -153,6 +156,7 @@ public class PlayerMng : MonoBehaviour
         if(collision.tag == "Ladder")
         {
             canClimb = true;
+            sprIcone.enabled = true;
             ladderTransform = collision.transform;
             if (isDown)
             {
@@ -185,6 +189,7 @@ public class PlayerMng : MonoBehaviour
         if(collision.tag == "TP")
         {
             canTP = true;
+            sprIcone.enabled = true;
 
             if (collision.name == "1" && canTP == true)
             {
@@ -204,6 +209,7 @@ public class PlayerMng : MonoBehaviour
 
             if(canHide)
             {
+                sprIcone.enabled = true;
                 currentHide = collision.gameObject;
             }
         }
@@ -234,16 +240,19 @@ public class PlayerMng : MonoBehaviour
         if(collision.tag == "Ladder")
         {
             canClimb = false;
+            sprIcone.enabled = false;
         }
 
         if (collision.tag == "Hide")
         {
             canHide = false;
+            sprIcone.enabled = false;
         }
 
         if (collision.tag == "TP")
         {
             canTP = false;
+            sprIcone.enabled = false;
         }
     }
 
@@ -293,6 +302,7 @@ public class PlayerMng : MonoBehaviour
             currentPosition.y = gameObject.transform.position.y;
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                sprIcone.enabled = false;
                 rgb2D.velocity = Vector2.zero;
                 SetState(playerState.Climb);
                 this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);

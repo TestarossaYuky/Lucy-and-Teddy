@@ -29,6 +29,11 @@ public class AI : MonoBehaviour
     private int objectStage;
     private int objectRoom;
 
+    private SpriteRenderer sprIcone;
+    public Sprite trigger;
+    public Sprite detect;
+
+    private Transform View;
 
     #region Component
     private Rigidbody2D rgb2D;
@@ -65,6 +70,8 @@ public class AI : MonoBehaviour
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        sprIcone = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
+        View = this.transform.GetChild(0);
     }
 
     // Update is called once per frame
@@ -133,20 +140,24 @@ public class AI : MonoBehaviour
                         //check l'échelle la plus proche
                     }
 
+                    sprIcone.sprite = detect;
+                    sprIcone.enabled = true;
+
                     break;
                 }
 
             case Infiltration.Undetected:
                 {
-                   
 
+                    sprIcone.enabled = false;
                     break;
 
                 }
 
             case Infiltration.Trigger:
                 {
-                    
+                    sprIcone.sprite = trigger;
+                    sprIcone.enabled = true;
                     break;
 
                 }
@@ -202,11 +213,21 @@ public class AI : MonoBehaviour
     {
         // Sprite Gestion
         if (currentDirection < 0)
+        {
             this.sprRenderer.flipX = true;
+            View.localScale = -this.transform.localScale;
+        }
+            
 
         else
+        {
             this.sprRenderer.flipX = false;
+            View.localScale = this.transform.localScale;
+        }
+            
 
+
+        
 
         //Movement Script
         movement = new Vector2(speed * currentDirection, 0);
