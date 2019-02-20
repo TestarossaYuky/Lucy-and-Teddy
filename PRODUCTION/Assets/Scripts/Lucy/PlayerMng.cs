@@ -119,6 +119,11 @@ public class PlayerMng : MonoBehaviour
         currentState = newState;
     }
 
+    public int GetCurrentStage()
+    {
+        return currentStage;
+    }
+
     private void Move()
     {
         float inputX = Input.GetAxis("Horizontal");

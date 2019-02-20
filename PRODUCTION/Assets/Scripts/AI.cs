@@ -35,6 +35,10 @@ public class AI : MonoBehaviour
 
     private Transform View;
 
+    [SerializeField]
+    public GameObject Lucy;
+
+    #region Theme Song
     public AudioSource theme;
     [SerializeField]
     private AudioClip Main;
@@ -42,6 +46,17 @@ public class AI : MonoBehaviour
     private AudioClip Trigger;
     [SerializeField]
     private AudioClip Detected;
+    #endregion
+
+    #region Song
+    private AudioSource myAudio;
+
+    [SerializeField]
+    private AudioClip walk1;
+    [SerializeField]
+    private AudioClip walk2;
+
+    #endregion
 
     #region Component
     private Rigidbody2D rgb2D;
@@ -78,6 +93,7 @@ public class AI : MonoBehaviour
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        myAudio = GetComponent<AudioSource>();
         sprIcone = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
         View = this.transform.GetChild(0);
     }
@@ -87,6 +103,7 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
+        
     }
 
     private void FixedUpdate()
@@ -106,6 +123,22 @@ public class AI : MonoBehaviour
                     anim.SetBool("Idle", false);
                     anim.SetBool("Walk", true);
 
+                    if((currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() && Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor -1) || (Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor && currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() - 1))//|| currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() && currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() + 1)
+                    {
+                        if (myAudio.isPlaying == false)
+                        {
+                            int random = Random.Range(0, 2);
+                            if (random == 1)
+                            {
+                                myAudio.PlayOneShot(walk1);
+                            }
+                            else if (random == 0)
+                                myAudio.PlayOneShot(walk2);
+                        }
+                    }
+                    
+                    
+                        
                     break;
 
                 }
@@ -172,6 +205,7 @@ public class AI : MonoBehaviour
 
 
         }
+        SpacialSong();
     }
 
     void SetState(State state)
@@ -271,6 +305,24 @@ public class AI : MonoBehaviour
         //Movement Script
         movement = new Vector2(speed * currentDirection, 0);
         this.rgb2D.velocity = movement * Time.deltaTime;
+    }
+
+    private void SpacialSong()
+    {
+        if(Lucy != null)
+        {
+            
+            if(Lucy.transform.position.x > this.transform.position.x)
+            {
+               
+                myAudio.panStereo = 1 * Lucy.transform.position.x + this.transform.position.x /4;
+            }
+            else if(Lucy.transform.position.x < this.transform.position.x)
+            {
+
+                myAudio.panStereo = -1 * Lucy.transform.position.x + this.transform.position.x /4;
+            }
+        }
     }
 
     public void SetDirection(int dir)
