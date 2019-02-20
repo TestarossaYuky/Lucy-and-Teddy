@@ -19,6 +19,18 @@ public class InteractableObject : MonoBehaviour
     private SpriteRenderer spr;
     private Color baseColor;
 
+
+
+    private AudioSource mySource;
+
+    public AudioClip RadioOn;
+    public AudioClip RadioOff;
+
+    public AudioClip RadioStation1;
+    public AudioClip RadioStation2;
+
+    public int isCheck = 0;
+
     [SerializeField]
     private string inputName;
 
@@ -29,32 +41,41 @@ public class InteractableObject : MonoBehaviour
         itemCollider = GetComponent<BoxCollider2D>();
         spr = GetComponent<SpriteRenderer>();
         baseColor = spr.color;
+        mySource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         haveElectricity = myRooms.GetIsOn();
+
         if (haveElectricity)
         {
-            if(inputName != null)
+            
+            if (inputName != null)
             {
+                ChangeColor(spr.color);
+
                 if (Input.GetKeyDown(inputName))
                 {
                     ActiveWave();
                     SetIsUse(true);
+                    isCheck++;
                 }
 
                 if (Input.GetKeyUp(inputName))
                 {
                     ActiveWave();
                 }
+
+               
             }
             
 
         }
         else
         {
+            spr.color = baseColor;
             SetIsUse(false);
          
             waveCollider.enabled = false;
@@ -62,19 +83,69 @@ public class InteractableObject : MonoBehaviour
 
         if (isUse)
         {
-            if (inputName == "a")
-                spr.color = Color.red;
-            else if (inputName == "w")
-                spr.color = Color.green;
-            else if (inputName == "x")
-                spr.color = Color.blue;
-            else if (inputName == "c")
-                spr.color = Color.yellow;
+
+
+            if(mySource != null) 
+                mySource.mute = false;
+
+            
+
+            if (this.gameObject.name == "Radio")
+            {
+                if(isCheck > 0)
+                {
+                    StartCoroutine(PlayRadio());
+                    isCheck = 0;
+                }
+            }
         }
         else
-            spr.color = baseColor;
-       
-       
+        {
+            if(mySource != null)
+            {
+                mySource.mute = true;
+                mySource.Stop();
+                mySource.clip = null;
+            }
+        }
+    }
+
+    IEnumerator PlayRadio()
+    {
+        mySource.clip = RadioOn;
+        mySource.PlayOneShot(RadioOn, 1f);
+        yield return new WaitForSeconds(mySource.clip.length);
+
+        mySource.clip = RadioStation1;
+        mySource.PlayOneShot(RadioStation1, 0.05f);
+        yield return new WaitForSeconds(mySource.clip.length);
+
+        mySource.clip = RadioOff;
+        mySource.PlayOneShot(RadioOff, 1f);
+        yield return new WaitForSeconds(mySource.clip.length);
+
+        isCheck = 0;
+    }
+
+    private void ChangeColor(Color c)
+    {
+        if(c != Color.white)
+        {
+            spr.color = Color.white;
+            if(mySource != null)
+            {
+                mySource.clip = null;
+                if (this.gameObject.name == "Radio")
+                    isCheck = 0;
+            }
+                
+           
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     void ActiveWave()
