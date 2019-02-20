@@ -35,6 +35,14 @@ public class AI : MonoBehaviour
 
     private Transform View;
 
+    public AudioSource theme;
+    [SerializeField]
+    private AudioClip Main;
+    [SerializeField]
+    private AudioClip Trigger;
+    [SerializeField]
+    private AudioClip Detected;
+
     #region Component
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
@@ -171,9 +179,40 @@ public class AI : MonoBehaviour
         currentState = state;
     }
 
+    public State GetState()
+    {
+        return currentState;
+    }
+
     public void SetInfiltration(Infiltration infiltration)
     {
         currentInfiltration = infiltration;
+
+        if(infiltration == Infiltration.Trigger)
+        {
+            theme.clip = Trigger;
+            theme.Play();
+            theme.loop = true;
+        }
+
+        else if (infiltration == Infiltration.Undetected)
+        {
+            theme.clip = Main;
+            theme.Play();
+            theme.loop = true;
+        }
+
+        else if (infiltration == Infiltration.Detected)
+        {
+            theme.clip = Detected;
+            theme.Play();
+            theme.loop = true;
+        }
+    }
+
+    public Infiltration GetInfiltration()
+    {
+        return currentInfiltration;
     }
 
     public void SetMyObject(InteractableObject obj)
