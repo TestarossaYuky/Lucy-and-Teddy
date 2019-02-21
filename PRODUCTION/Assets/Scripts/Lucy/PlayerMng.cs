@@ -197,22 +197,7 @@ public class PlayerMng : MonoBehaviour
             print("You lose");
         }
         
-        if(collision.tag == "TP")
-        {
-            canTP = true;
-            sprIcone.enabled = true;
-
-            if (collision.name == "1" && canTP == true)
-            {
-                Teleport tp = collision.GetComponentInParent<Teleport>();
-                currentGate = tp.enter2;
-            }
-            else if (collision.name == "2" && canTP == true)
-            {
-                Teleport tp = collision.GetComponentInParent<Teleport>();
-                currentGate = tp.enter1;
-            }
-        }
+        
 
         
 
@@ -256,7 +241,32 @@ public class PlayerMng : MonoBehaviour
                     currentHide = collision.gameObject;
                 }
             }
+
+            if (collision.tag == "TP")
+            {
+                canTP = true;
+                if(canTP == true)
+                    sprIcone.enabled = true;
+
+                if (collision.name == "1" && canTP == true)
+                {
+                    Teleport tp = collision.GetComponentInParent<Teleport>();
+                    currentGate = tp.enter2;
+                }
+                else if (collision.name == "2" && canTP == true)
+                {
+                    Teleport tp = collision.GetComponentInParent<Teleport>();
+                    currentGate = tp.enter1;
+                }
+            }
         }
+        else
+        {
+            canTP = false;
+            if (canTP == false && currentState != playerState.Hide)
+                sprIcone.enabled = false;
+        }
+            
     }
         private void OnTriggerExit2D(Collider2D collision)
     {
