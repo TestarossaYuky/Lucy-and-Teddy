@@ -277,7 +277,7 @@ public class PlayerMng : MonoBehaviour
         else
         {
             canTP = false;
-            if (canTP == false && currentState != playerState.Hide)
+            if (canTP == false && currentState != playerState.Hide && canClimb == false)
                 sprIcone.enabled = false;
         }
             
@@ -359,7 +359,7 @@ public class PlayerMng : MonoBehaviour
             source.PlayOneShot(door1, 0.5f);
         }
  
-        yield return new WaitForSeconds(source.clip.length);
+        yield return new WaitForSeconds(source.clip.length - 0.5f);
         this.transform.position = currentGate.transform.position;
         SetState(playerState.Idle);
     }
