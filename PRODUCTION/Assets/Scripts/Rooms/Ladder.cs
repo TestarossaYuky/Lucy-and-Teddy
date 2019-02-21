@@ -9,6 +9,7 @@ public class Ladder : MonoBehaviour
 
     [SerializeField]
     private float secondChance = 0.2f;
+   
 
     private bool first = false;
     private bool climb = false;

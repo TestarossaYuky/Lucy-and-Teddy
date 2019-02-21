@@ -4,24 +4,16 @@ using UnityEngine;
 
 public class Rooms : MonoBehaviour
 {
-    [SerializeField]
-    public Sprite Light;
-
-    [SerializeField]
-    public Sprite Dark;
-
-
-    
     public bool isOn;
     public int button;
 
     [SerializeField]
     private int roomNb;
     
-
     private int stage;
     private string roomName;
 
+    private Color baseColor;
     private SpriteRenderer spr;
     
 
@@ -30,6 +22,7 @@ public class Rooms : MonoBehaviour
     {
         roomName = this.gameObject.name;
         spr = GetComponent<SpriteRenderer>();
+        baseColor = spr.color;
     }
 
     // Update is called once per frame
@@ -41,9 +34,9 @@ public class Rooms : MonoBehaviour
     void ChangeSprite()
     {
         if (!isOn)
-            spr.sprite = Dark;
+            spr.color = baseColor;
         else
-            spr.sprite = Light;
+            spr.color = Color.white;
     }
 
     public int GetRoomNb()

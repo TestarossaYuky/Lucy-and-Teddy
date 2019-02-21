@@ -29,6 +29,34 @@ public class AI : MonoBehaviour
     private int objectStage;
     private int objectRoom;
 
+    private SpriteRenderer sprIcone;
+    public Sprite trigger;
+    public Sprite detect;
+
+    private Transform View;
+
+    [SerializeField]
+    public GameObject Lucy;
+
+    #region Theme Song
+    public AudioSource theme;
+    [SerializeField]
+    private AudioClip Main;
+    [SerializeField]
+    private AudioClip Trigger;
+    [SerializeField]
+    private AudioClip Detected;
+    #endregion
+
+    #region Song
+    private AudioSource myAudio;
+
+    [SerializeField]
+    private AudioClip walk1;
+    [SerializeField]
+    private AudioClip walk2;
+
+    #endregion
 
     #region Component
     private Rigidbody2D rgb2D;
@@ -60,11 +88,14 @@ public class AI : MonoBehaviour
         currentState = State.Move;
         currentInfiltration = Infiltration.Undetected;
         movement = Vector2.zero;
-        currentDirection = -1;
+        currentDirection = 1;
 
         rgb2D = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        myAudio = GetComponent<AudioSource>();
+        sprIcone = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
+        View = this.transform.GetChild(0);
     }
 
     // Update is called once per frame
@@ -72,40 +103,7 @@ public class AI : MonoBehaviour
     {
         MoveTo();
         Climb();
-
-
-        //if (currentInfiltration == Infiltration.Detected)
-        //{
-            
-        //    if (currentFloor != objectStage)
-        //    {
-
-        //    }
-
-        //    else
-        //    {
-
-        //        if (objectRoom > currentRoom)
-        //            currentDirection = 1;
-        //        else if (objectRoom < currentRoom)
-        //            currentDirection = -1;
-        //        else if (objectRoom == currentRoom)
-        //        {
-
-        //            if (myObject.transform.position.x > this.gameObject.transform.position.x)
-        //                currentDirection = 1;
-
-        //            else
-        //                currentDirection = -1;
-        //        }
-        //        //else
-        //        //check petite fille direction
-        //        //check la direction donc les salles
-        //    }
-        //    //check sa room
-        //    //check la room de destination
-
-        //}
+        
     }
 
     private void FixedUpdate()
@@ -125,6 +123,22 @@ public class AI : MonoBehaviour
                     anim.SetBool("Idle", false);
                     anim.SetBool("Walk", true);
 
+                    if((currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() && Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor -1) || (Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor && currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() - 1))//|| currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() && currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() + 1)
+                    {
+                        if (myAudio.isPlaying == false)
+                        {
+                            int random = Random.Range(0, 2);
+                            if (random == 1)
+                            {
+                                myAudio.PlayOneShot(walk1);
+                            }
+                            else if (random == 0)
+                                myAudio.PlayOneShot(walk2);
+                        }
+                    }
+                    
+                    
+                        
                     break;
 
                 }
@@ -167,26 +181,31 @@ public class AI : MonoBehaviour
                         //check l'échelle la plus proche
                     }
 
+                    sprIcone.sprite = detect;
+                    sprIcone.enabled = true;
+
                     break;
                 }
 
             case Infiltration.Undetected:
                 {
-                   
 
+                    sprIcone.enabled = false;
                     break;
 
                 }
 
             case Infiltration.Trigger:
                 {
-
+                    sprIcone.sprite = trigger;
+                    sprIcone.enabled = true;
                     break;
 
                 }
 
 
         }
+        SpacialSong();
     }
 
     void SetState(State state)
@@ -194,9 +213,40 @@ public class AI : MonoBehaviour
         currentState = state;
     }
 
+    public State GetState()
+    {
+        return currentState;
+    }
+
     public void SetInfiltration(Infiltration infiltration)
     {
         currentInfiltration = infiltration;
+
+        if(infiltration == Infiltration.Trigger)
+        {
+            theme.clip = Trigger;
+            theme.Play();
+            theme.loop = true;
+        }
+
+        else if (infiltration == Infiltration.Undetected)
+        {
+            theme.clip = Main;
+            theme.Play();
+            theme.loop = true;
+        }
+
+        else if (infiltration == Infiltration.Detected)
+        {
+            theme.clip = Detected;
+            theme.Play();
+            theme.loop = true;
+        }
+    }
+
+    public Infiltration GetInfiltration()
+    {
+        return currentInfiltration;
     }
 
     public void SetMyObject(InteractableObject obj)
@@ -236,15 +286,43 @@ public class AI : MonoBehaviour
     {
         // Sprite Gestion
         if (currentDirection < 0)
+        {
             this.sprRenderer.flipX = true;
+            View.localScale = -this.transform.localScale;
+        }
+            
 
         else
+        {
             this.sprRenderer.flipX = false;
+            View.localScale = this.transform.localScale;
+        }
+            
 
+
+        
 
         //Movement Script
         movement = new Vector2(speed * currentDirection, 0);
         this.rgb2D.velocity = movement * Time.deltaTime;
+    }
+
+    private void SpacialSong()
+    {
+        if(Lucy != null)
+        {
+            
+            if(Lucy.transform.position.x > this.transform.position.x)
+            {
+               
+                myAudio.panStereo = 1 * Lucy.transform.position.x + this.transform.position.x /4;
+            }
+            else if(Lucy.transform.position.x < this.transform.position.x)
+            {
+
+                myAudio.panStereo = -1 * Lucy.transform.position.x + this.transform.position.x /4;
+            }
+        }
     }
 
     public void SetDirection(int dir)
@@ -286,7 +364,6 @@ public class AI : MonoBehaviour
         if(collision.tag == "TriggerRooms")
         {
             dirTrigger = true;
-            
         }
 
         if(collision.tag == "TriggerWait" && waitTrigger == false)
@@ -336,7 +413,6 @@ public class AI : MonoBehaviour
         {
             if (collision.tag == "Object")
             {
-
                 if (collision.GetComponent<InteractableObject>().GetIsUse() == true)
                 {
                     StartCoroutine(WaitingTime(0));
@@ -348,9 +424,7 @@ public class AI : MonoBehaviour
                         SetDirection(-1);
 
                     collision.GetComponent<InteractableObject>().SetIsUse(false);
-
                     SetInfiltration(Infiltration.Undetected);
-
                 }
 
             }

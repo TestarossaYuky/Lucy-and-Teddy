@@ -11,6 +11,9 @@ TagManager:
   - Ennemi
   - Ladder
   - Object
+  - TP
+  - Hide
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -22,8 +25,8 @@ TagManager:
   - 
   - InteractableObject
   - AI
-  - 
-  - 
+  - VIEW
+  - Player
   - 
   - 
   - 
