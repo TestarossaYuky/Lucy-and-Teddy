@@ -18,6 +18,10 @@ public class PlayerMng : MonoBehaviour
     private bool isOn = false;
 
     private Vector3 currentPosition;
+
+    public AudioClip door1;
+    public AudioClip door2;
+
     #endregion
 
     #region Component
@@ -28,12 +32,14 @@ public class PlayerMng : MonoBehaviour
     private GameObject currentGate;
     private GameObject currentHide;
 
+    private Teleport currentTp;
+
     private SpriteRenderer sprIcone;
     #endregion
 
     #region State
     [SerializeField] 
-    enum playerState { Idle, Move, Climb, Hide, Take, Crying}
+    enum playerState { Idle, Move, Climb, Hide, Take, Crying, Door}
 
     private playerState currentState;
     #endregion
@@ -68,7 +74,7 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentState != playerState.Climb && currentState != playerState.Hide)
+        if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
             Move();
 
         Climb();
@@ -114,7 +120,12 @@ public class PlayerMng : MonoBehaviour
                     this.sprRenderer.enabled = false;
                     break;
                 }
-
+            case playerState.Door:
+                {
+                    this.sprRenderer.enabled = false;
+                    this.sprIcone.enabled = false;
+                    break;
+                }
         }
             
     }
@@ -196,32 +207,20 @@ public class PlayerMng : MonoBehaviour
             this.gameObject.SetActive(false);
             print("You lose");
         }
-        
-        if(collision.tag == "TP")
+
+        if (collision.tag == "Item" && collision.GetComponent<SpriteRenderer>().enabled == true)
         {
-            canTP = true;
-            sprIcone.enabled = true;
-
-            if (collision.name == "1" && canTP == true)
-            {
-                Teleport tp = collision.GetComponentInParent<Teleport>();
-                currentGate = tp.enter2;
-            }
-            else if (collision.name == "2" && canTP == true)
-            {
-                Teleport tp = collision.GetComponentInParent<Teleport>();
-                currentGate = tp.enter1;
-            }
-        }
-
-        
-
-
-        if (collision.tag == "Item")
-        {
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<AudioSource>().Play();
+            collision.GetComponent<SpriteRenderer>().enabled = false;
+            StartCoroutine(WaitItem(collision.gameObject.GetComponent<AudioSource>()));
             print("You Win");
         }
+    }
+
+    IEnumerator WaitItem(AudioSource source)
+    {
+        yield return new WaitForSeconds(source.clip.length);
+        Destroy(source.gameObject);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -256,7 +255,32 @@ public class PlayerMng : MonoBehaviour
                     currentHide = collision.gameObject;
                 }
             }
+
+            if (collision.tag == "TP")
+            {
+                canTP = true;
+                if(canTP == true && currentState != playerState.Door)
+                    sprIcone.enabled = true;
+
+                if (collision.name == "1" && canTP == true)
+                {
+                    currentTp = collision.GetComponentInParent<Teleport>();
+                    currentGate = currentTp.enter2;
+                }
+                else if (collision.name == "2" && canTP == true)
+                {
+                    currentTp = collision.GetComponentInParent<Teleport>();
+                    currentGate = currentTp.enter1;
+                }
+            }
         }
+        else
+        {
+            canTP = false;
+            if (canTP == false && currentState != playerState.Hide && canClimb == false)
+                sprIcone.enabled = false;
+        }
+            
     }
         private void OnTriggerExit2D(Collider2D collision)
     {
@@ -312,10 +336,32 @@ public class PlayerMng : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Space))
             {
-                this.transform.position = currentGate.transform.position;
+                //this.transform.position = currentGate.transform.position;
+                SetState(playerState.Door);
+                if (currentTp.GetComponent<AudioSource>() != null)
+                    StartCoroutine(WaitDoor(currentTp.GetComponent<AudioSource>()));
                 canTP = false;
             }
         }
+    }
+
+    IEnumerator WaitDoor(AudioSource source)
+    {
+        int i = Random.Range(0, 2);
+        if(i == 0)
+        {
+            source.clip = door1;
+            source.PlayOneShot(door1, 0.5f);
+        }
+        else
+        {
+            source.clip = door2;
+            source.PlayOneShot(door1, 0.5f);
+        }
+ 
+        yield return new WaitForSeconds(source.clip.length - 0.5f);
+        this.transform.position = currentGate.transform.position;
+        SetState(playerState.Idle);
     }
 
     private void Climb()
