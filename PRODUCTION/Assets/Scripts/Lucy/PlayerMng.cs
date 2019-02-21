@@ -8,12 +8,14 @@ public class PlayerMng : MonoBehaviour
     [SerializeField] private float speed;
     private Vector2 movement;
     [SerializeField]
-    private string currentRooms;
+    private Rooms currentRooms;
     private int currentStage;
 
     private bool canTP = false;
     private bool canHide = false;
     private bool isHide = false;
+
+    private bool isOn = false;
 
     private Vector3 currentPosition;
     #endregion
@@ -72,6 +74,9 @@ public class PlayerMng : MonoBehaviour
         Climb();
         Teleport();
         Hide();
+
+        if (currentRooms != null)
+            isOn = currentRooms.GetIsOn();
     }
 
     private void FixedUpdate()
@@ -150,7 +155,7 @@ public class PlayerMng : MonoBehaviour
     {
         if(collision.tag == "Rooms")
         {
-            currentRooms = collision.name;
+            currentRooms = collision.GetComponent<Rooms>();
         }
 
         if(collision.tag == "Stage")
@@ -186,9 +191,10 @@ public class PlayerMng : MonoBehaviour
                 isTop = true;   
         }
 
-        if(collision.tag == "Ennemi")
+        if(collision.tag == "Ennemi" && currentState != playerState.Hide)
         {
             this.gameObject.SetActive(false);
+            print("You lose");
         }
         
         if(collision.tag == "TP")
@@ -208,15 +214,13 @@ public class PlayerMng : MonoBehaviour
             }
         }
 
-        if(collision.tag == "Hide")
-        {
-            canHide = true;
+        
 
-            if(canHide)
-            {
-                sprIcone.enabled = true;
-                currentHide = collision.gameObject;
-            }
+
+        if (collision.tag == "Item")
+        {
+            Destroy(collision.gameObject);
+            print("You Win");
         }
     }
 
@@ -238,9 +242,23 @@ public class PlayerMng : MonoBehaviour
             else
                 finalLadder = null;
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D collision)
+        if (isOn == true)
+        {
+            if (collision.tag == "Hide")
+            {
+
+                canHide = true;
+
+                if (canHide)
+                {
+                    sprIcone.enabled = true;
+                    currentHide = collision.gameObject;
+                }
+            }
+        }
+    }
+        private void OnTriggerExit2D(Collider2D collision)
     {
         if(collision.tag == "Ladder")
         {

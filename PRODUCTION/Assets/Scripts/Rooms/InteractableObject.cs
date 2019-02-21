@@ -119,9 +119,23 @@ public class InteractableObject : MonoBehaviour
         mySource.PlayOneShot(RadioOn, 1f);
         yield return new WaitForSeconds(mySource.clip.length);
 
-        mySource.clip = RadioStation1;
-        mySource.PlayOneShot(RadioStation1, 0.05f);
-        yield return new WaitForSeconds(mySource.clip.length);
+        int i = Random.Range(0, 2);
+
+        if(i == 0)
+        {
+            mySource.clip = RadioStation1;
+            mySource.PlayOneShot(RadioStation1, 0.05f);
+            yield return new WaitForSeconds(mySource.clip.length);
+        }
+
+        else if( i == 1)
+        {
+            mySource.clip = RadioStation2;
+            mySource.PlayOneShot(RadioStation2, 0.05f);
+            yield return new WaitForSeconds(mySource.clip.length);
+        }
+
+        
 
         mySource.clip = RadioOff;
         mySource.PlayOneShot(RadioOff, 1f);
