@@ -202,11 +202,19 @@ public class PlayerMng : MonoBehaviour
         
 
 
-        if (collision.tag == "Item")
+        if (collision.tag == "Item" && collision.GetComponent<SpriteRenderer>().enabled == true)
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<AudioSource>().Play();
+            collision.GetComponent<SpriteRenderer>().enabled = false;
+            StartCoroutine(WaitItem(collision.gameObject.GetComponent<AudioSource>()));
             print("You Win");
         }
+    }
+
+    IEnumerator WaitItem(AudioSource source)
+    {
+        yield return new WaitForSeconds(source.clip.length);
+        Destroy(source.gameObject);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
