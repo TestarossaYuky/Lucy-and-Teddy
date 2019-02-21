@@ -19,7 +19,8 @@ public class InteractableObject : MonoBehaviour
     private SpriteRenderer spr;
     private Color baseColor;
 
-
+    [SerializeField]
+    private string myColor;
 
     private AudioSource mySource;
 
@@ -67,13 +68,8 @@ public class InteractableObject : MonoBehaviour
                 if (Input.GetKeyUp(inputName))
                 {
                     ActiveWave();
-
                 }
-
-               
-            }
-            
-
+            }       
         }
         else
         {
@@ -146,7 +142,7 @@ public class InteractableObject : MonoBehaviour
 
     private void ChangeColor(Color c)
     {
-        if(c != Color.white)
+        if(c != Color.white && myColor == "White")
         {
             spr.color = Color.white;
             if(mySource != null)
@@ -155,8 +151,25 @@ public class InteractableObject : MonoBehaviour
                 if (this.gameObject.name == "Radio")
                     isCheck = 0;
             }
-                
-           
+        }
+        if(myColor == "Red")
+        {
+            spr.color = Color.red;
+        }
+
+        else if(myColor == "Blue")
+        {
+            spr.color = Color.blue;
+        }
+
+        else if (myColor == "Green")
+        {
+            spr.color = Color.green;
+        }
+
+        else if (myColor == "Yellow")
+        {
+            spr.color = Color.green;
         }
     }
 
