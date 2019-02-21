@@ -1,9 +1,7 @@
 fileFormatVersion: 2
-guid: e039283e6698262419584822b5870f95
+guid: cda86ab52221a2f42ae9148f574ab15c
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: Lucy_Idle_Right_0
-    21300002: Lucy_Idle_Right_1
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -42,12 +40,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 150
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -84,51 +82,11 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Lucy_Idle_Right_0
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 3
-        width: 104
-        height: 228
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 441c36722ddff164b994278d32090716
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lucy_Idle_Right_1
-      rect:
-        serializedVersion: 2
-        x: 174
-        y: 3
-        width: 103
-        height: 230
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe0f15890414de145b0ba0612a2be754
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 6080fd311f13207419cc7d8775178dee
+    spriteID: de4ce9fcfec02de4998eea0746e7df35
     vertices: []
     indices: 
     edges: []
