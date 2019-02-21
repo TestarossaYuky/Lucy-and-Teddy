@@ -58,6 +58,7 @@ public class InteractableObject : MonoBehaviour
 
                 if (Input.GetKeyDown(inputName))
                 {
+                    isCheck = 0;
                     ActiveWave();
                     SetIsUse(true);
                     isCheck++;
@@ -66,6 +67,7 @@ public class InteractableObject : MonoBehaviour
                 if (Input.GetKeyUp(inputName))
                 {
                     ActiveWave();
+
                 }
 
                
@@ -77,7 +79,8 @@ public class InteractableObject : MonoBehaviour
         {
             spr.color = baseColor;
             SetIsUse(false);
-         
+                    isCheck = 0;
+
             waveCollider.enabled = false;
         }
 

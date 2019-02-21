@@ -188,7 +188,7 @@ public class PlayerMng : MonoBehaviour
 
         if(collision.tag == "Ennemi")
         {
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
         
         if(collision.tag == "TP")
