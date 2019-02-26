@@ -103,7 +103,7 @@ public class PlayerMng : MonoBehaviour
                 Move();
             }
 
-            else if(isFirstMove == true)
+            else if(isFirstMove == true && step2 == false)
             {
                 StartCoroutine(PlayDialogue(SetLight));
             }
@@ -142,6 +142,11 @@ public class PlayerMng : MonoBehaviour
         if (clip == MoveDialogue)
         {
             step1 = true;
+        }
+
+        else if(clip == SetLight)
+        {
+            step2 = true;
         }
 
         TeddySource.PlayOneShot(clip, 1f);
@@ -234,9 +239,9 @@ public class PlayerMng : MonoBehaviour
 
     IEnumerator MoveTutorial()
     {
-        isFirstMove = true;
-        yield return new WaitForSeconds(1f);
         
+        yield return new WaitForSeconds(1f);
+        isFirstMove = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
