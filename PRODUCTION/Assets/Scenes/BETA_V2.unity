@@ -1027,6 +1027,21 @@ PrefabInstance:
       propertyPath: door2
       value: 
       objectReference: {fileID: 8300000, guid: b3537dbdcbbc0194c9801e7e9420b659, type: 3}
+    - target: {fileID: 1497120461182938587, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
+        type: 3}
+      propertyPath: myGameMng
+      value: 
+      objectReference: {fileID: 1252469229}
+    - target: {fileID: 1497120461182938587, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
+        type: 3}
+      propertyPath: SetLight
+      value: 
+      objectReference: {fileID: 8300000, guid: da1150ae5460d6e40a4fb6371892c1ba, type: 3}
+    - target: {fileID: 1497120461182938587, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
+        type: 3}
+      propertyPath: MoveDialogue
+      value: 
+      objectReference: {fileID: 8300000, guid: f5f1340a4b1b9704098b528d46559ad2, type: 3}
     - target: {fileID: 1302366873, guid: 85e5e1b2b14b1b64dafed1be234b5e86, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.938
@@ -1318,6 +1333,50 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6251141514105824289}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1252469228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1252469230}
+  - component: {fileID: 1252469229}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1252469229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252469228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9b362225aa61764e9ee805268c89681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
+--- !u!4 &1252469230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252469228}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.0542336, y: 0.26490557, z: -0.11671408}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1439875360 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6251141513867154150, guid: f50a9ecd46804f744b513462c1d2d275,
@@ -1336,6 +1395,133 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7da781e255af34146bbed8e86b468814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1678638106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1678638107}
+  - component: {fileID: 1678638108}
+  m_Layer: 11
+  m_Name: Teddy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1678638107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678638106}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1928549155}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1678638108
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678638106}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1696029874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1859,6 +2045,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!4 &1928549155 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1497120461182938585, guid: 85e5e1b2b14b1b64dafed1be234b5e86,
+    type: 3}
+  m_PrefabInstance: {fileID: 877778179}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6251141514105824289
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1870,6 +2062,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PLAN
+      objectReference: {fileID: 0}
+    - target: {fileID: 332535361593788924, guid: f50a9ecd46804f744b513462c1d2d275,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 332535361855908684, guid: f50a9ecd46804f744b513462c1d2d275,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 6251141513867154150, guid: f50a9ecd46804f744b513462c1d2d275,
         type: 3}
@@ -1955,16 +2157,6 @@ PrefabInstance:
         type: 3}
       propertyPath: myColor
       value: Green
-      objectReference: {fileID: 0}
-    - target: {fileID: 332535361593788924, guid: f50a9ecd46804f744b513462c1d2d275,
-        type: 3}
-      propertyPath: m_TagString
-      value: Door
-      objectReference: {fileID: 0}
-    - target: {fileID: 332535361855908684, guid: f50a9ecd46804f744b513462c1d2d275,
-        type: 3}
-      propertyPath: m_TagString
-      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 6251141513193058965, guid: f50a9ecd46804f744b513462c1d2d275,
         type: 3}

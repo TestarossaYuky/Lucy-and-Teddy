@@ -25,6 +25,7 @@ public class PlayerMng : MonoBehaviour
     #endregion
 
     #region Component
+    public GameMng myGameMng;
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
     private Animator anim;
@@ -39,8 +40,9 @@ public class PlayerMng : MonoBehaviour
 
     #region State
     [SerializeField] 
-    enum playerState { Idle, Move, Climb, Hide, Take, Crying, Door}
+    enum playerState { Idle, Move, Climb, Hide, Take, Crying, Door, Dialogue}
 
+    [SerializeField]
     private playerState currentState;
     #endregion
 
@@ -55,13 +57,26 @@ public class PlayerMng : MonoBehaviour
     private Transform ladderTransform;
     #endregion
 
+    #region Tutorial
+    private bool isFirstMove = false;
+    private bool dialogueEnd = false;
+
+    private bool step1 = false;
+    private bool step2 = false;
+
+    private AudioSource TeddySource;
+
+    public AudioClip MoveDialogue;
+    public AudioClip SetLight;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
         currentGate = null;
         currentHide = null;
         movement = Vector2.zero;
-        SetState(playerState.Idle);
+        SetState(playerState.Dialogue);
 
         currentPosition = GetComponent<Transform>().position;
 
@@ -69,20 +84,71 @@ public class PlayerMng : MonoBehaviour
         sprRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         sprIcone = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        TeddySource = this.transform.GetChild(1).GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
-            Move();
+        if(myGameMng.currentState == GameMng.GameState.Tutorial)
+        {            
+            
+            if (currentState == playerState.Dialogue && step1 == false) 
+            {  
+                StartCoroutine(PlayDialogue(MoveDialogue));
+                
+            }
+            else if(step1 == true && currentState != playerState.Dialogue)
+            {
+                Move();
+            }
 
-        Climb();
-        Teleport();
-        Hide();
+            else if(isFirstMove == true)
+            {
+                StartCoroutine(PlayDialogue(SetLight));
+            }
+            //else if(currentState != playerState.Dialogue && step1 == true)
+            //{
+            //    Move();
+            //}
+            //if(step2 == true)
+            //{
+            //    if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door && currentState != playerState.Dialogue)
+            //    {
 
-        if (currentRooms != null)
-            isOn = currentRooms.GetIsOn();
+            //        myGameMng.SetState(GameMng.GameState.First);
+            //    }
+            //}
+            
+              
+        }
+
+        else
+        {
+            if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
+                Move();
+
+            Climb();
+            Teleport();
+            Hide();
+
+            if (currentRooms != null)
+                isOn = currentRooms.GetIsOn();
+        }
+    }
+
+    IEnumerator PlayDialogue(AudioClip clip)
+    {
+        if (clip == MoveDialogue)
+        {
+            step1 = true;
+        }
+
+        TeddySource.PlayOneShot(clip, 1f);
+        yield return new WaitForSeconds(clip.length);
+        
+        
+        SetState(playerState.Idle);
     }
 
     private void FixedUpdate()
@@ -156,10 +222,21 @@ public class PlayerMng : MonoBehaviour
 
             movement = new Vector2(speed * inputX, 0);
             this.rgb2D.velocity = movement * Time.deltaTime;
-
         }
         else
             SetState(playerState.Idle);
+
+        if(step1 == true && isFirstMove == false)
+        {
+            StartCoroutine(MoveTutorial());
+        }
+    }
+
+    IEnumerator MoveTutorial()
+    {
+        isFirstMove = true;
+        yield return new WaitForSeconds(1f);
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
