@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class GameMng : MonoBehaviour
 {
-
-    public enum GameState { Tutorial, Step1, Step2};
+    public enum GameState
+    {
+        Tutorial = 0,
+        First,
+        Second,
+        Third,
+    }
 
     public GameState currentState;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentState = GameState.Tutorial;
+        SetState(GameState.Tutorial);
     }
 
     // Update is called once per frame
@@ -20,4 +25,10 @@ public class GameMng : MonoBehaviour
     {
         
     }
+
+    public void SetState(GameState newState)
+    {
+        currentState = newState;
+    }
+
 }

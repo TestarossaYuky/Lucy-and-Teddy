@@ -42,6 +42,8 @@ public class Boitier : MonoBehaviour
 
     #endregion
 
+    public PlayerMng myPlayer;
+
     private void Awake()
     {
         globalGroup.Add(group1);
@@ -66,51 +68,56 @@ public class Boitier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isOverload)
+        if (myPlayer.GetStep2() != false && myPlayer.GetFirstLight() == true)
         {
-            for (int i = 0; i < globalGroup.Count; i++)
+            if (isOverload)
             {
-                Overload(globalGroup[i]);
-                button[i] = false;
-                lastInput[i] = false;
-                
-            }
-            if (!Input.anyKey)
-                overload = 0;
-        }
-
-        else
-        {   
-            for (int i = 0; i < inputName.Count; i++)
-            {
-                if (Input.anyKeyDown)
+                for (int i = 0; i < globalGroup.Count; i++)
                 {
-                    if (Input.GetKeyDown(inputName[i]))
+                    Overload(globalGroup[i]);
+                    button[i] = false;
+                    lastInput[i] = false;
+
+                }
+                if (!Input.anyKey)
+                    overload = 0;
+            }
+
+            else
+            {
+                for (int i = 0; i < inputName.Count; i++)
+                {
+                    if (Input.anyKeyDown)
                     {
-                        button[i] = true;
-                        
-                        CheckRooms(globalGroup[i]);
-                        
-                        overload++;
+                        if (Input.GetKeyDown(inputName[i]))
+                        {
+                            button[i] = true;
+
+                            CheckRooms(globalGroup[i]);
+
+                            overload++;
+                        }
+
+                        if (myPlayer.GetFirstLight() == true && myPlayer.GetClear() == false)
+                            myPlayer.SetClear(true);
                     }
 
+                    if (Input.GetKeyUp(inputName[i]))
+                    {
+
+                        SwitchOnOff(button[i], globalGroup[i]);
+                        button[i] = false;
+                        lastInput[i] = button[i];
+
+                        if (overload != 0)
+                            overload--;
+                    }
 
                 }
-
-                if (Input.GetKeyUp(inputName[i]))
-                {
-
-                    SwitchOnOff(button[i], globalGroup[i]);
-                    button[i] = false;
-                    lastInput[i] = button[i];
-
-                    if (overload != 0)
-                        overload--;
-                }
-
             }
+            OverloadState();
         }
-        OverloadState();
+        
 
     }
 

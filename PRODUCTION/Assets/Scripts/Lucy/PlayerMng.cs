@@ -40,7 +40,7 @@ public class PlayerMng : MonoBehaviour
 
     #region State
     [SerializeField] 
-    enum playerState { Idle, Move, Climb, Hide, Take, Crying, Door, Dialogue}
+    enum playerState { Idle, Move, Climb, Hide, Take, Crying, Door, Dialogue, Interact}
 
     [SerializeField]
     private playerState currentState;
@@ -58,21 +58,49 @@ public class PlayerMng : MonoBehaviour
     #endregion
 
     #region Tutorial
+    private bool canInteract = false;
+
     private bool isFirstMove = false;
+    private bool isFirstLight = false;
+    private bool isFirstJack = false;
+    private bool LightClear = false;
     private bool dialogueEnd = false;
+    private bool climbTutorial = false;
+
+    private bool haveKey = false;
+    private bool nextToDoor = false;
+    private GameObject currentDoor;
+    public GameObject KeyKitchen;
+    public GameObject JackTrigger;
+
+    private bool fridgeOpen = false;
+    private bool fridgeCollider = false;
 
     private bool step1 = false;
     private bool step2 = false;
+    private bool step3 = false;
 
     private AudioSource TeddySource;
 
     public AudioClip MoveDialogue;
+    public AudioClip HugDialogue;
     public AudioClip SetLight;
+    public AudioClip JackDialogue;
+
+
+    public AudioClip DoorLock;
+    public AudioClip DoorUnLock;
+    public AudioClip FridgeOpen;
+    public AudioClip FridgeClose;
+
+    public InteractableObject phono;
+
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
+        currentDoor = null;
         currentGate = null;
         currentHide = null;
         movement = Vector2.zero;
@@ -90,41 +118,46 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        OpenDoor(haveKey);
+        Fridge();
         if(myGameMng.currentState == GameMng.GameState.Tutorial)
         {            
             
-            if (currentState == playerState.Dialogue && step1 == false) 
-            {  
+            if(currentState == playerState.Dialogue && step1 == false)
+            {
                 StartCoroutine(PlayDialogue(MoveDialogue));
-                
             }
-            else if(step1 == true && currentState != playerState.Dialogue)
+            if(step1 == true && currentState != playerState.Dialogue)
             {
                 Move();
             }
-
-            else if(isFirstMove == true && step2 == false)
+            if (climbTutorial == true && currentState != playerState.Dialogue)
             {
-                StartCoroutine(PlayDialogue(SetLight));
+                Climb();
+                Teleport();
+                Hide();
             }
-            //else if(currentState != playerState.Dialogue && step1 == true)
-            //{
-            //    Move();
-            //}
-            //if(step2 == true)
-            //{
-            //    if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door && currentState != playerState.Dialogue)
-            //    {
 
-            //        myGameMng.SetState(GameMng.GameState.First);
-            //    }
-            //}
-            
+            if(step2 == true)
+            {
+                isFirstLight = true;
               
+            }
+
+            if(step3 == true)
+            {
+                isFirstJack = true;
+            }
+
+            if(phono.GetListen() == true)
+            {
+                myGameMng.SetState(GameMng.GameState.First);
+            }
         }
 
         else
         {
+            
             if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
                 Move();
 
@@ -132,28 +165,78 @@ public class PlayerMng : MonoBehaviour
             Teleport();
             Hide();
 
-            if (currentRooms != null)
-                isOn = currentRooms.GetIsOn();
+            
         }
+        if (currentRooms != null)
+            isOn = currentRooms.GetIsOn();
     }
 
     IEnumerator PlayDialogue(AudioClip clip)
     {
+        SetState(playerState.Dialogue);
+
         if (clip == MoveDialogue)
         {
             step1 = true;
         }
 
-        else if(clip == SetLight)
+        else if (clip == SetLight)
         {
             step2 = true;
         }
 
+        else if(clip == JackDialogue)
+        {
+            step3 = true;
+        }
+
+        else if(clip == HugDialogue)
+        {
+            climbTutorial = true;
+        }
+
         TeddySource.PlayOneShot(clip, 1f);
+
         yield return new WaitForSeconds(clip.length);
+
         
-        
+
         SetState(playerState.Idle);
+    }
+
+    public bool GetJack()
+    {
+        return isFirstJack;
+    }
+
+    public void SetJack(bool x)
+    {
+        isFirstJack = x;
+    }
+
+    public bool GetClear()
+    {
+        return LightClear;
+    }
+
+    public void SetClear(bool x)
+    {
+        LightClear = x;
+    }
+
+    public bool GetFirstLight()
+    {
+        return isFirstLight;
+    }
+
+    public void SetFirstLight(bool x)
+    {
+        isFirstLight = x;
+    }
+
+    public bool GetStep2()
+    {
+        return step2;
     }
 
     private void FixedUpdate()
@@ -197,6 +280,13 @@ public class PlayerMng : MonoBehaviour
                     this.sprIcone.enabled = false;
                     break;
                 }
+            case playerState.Dialogue:
+                {
+                    this.rgb2D.velocity = Vector2.zero;
+                    anim.SetBool("Idle", true);
+                    anim.SetBool("Move", false);
+                    break;
+                }
         }
             
     }
@@ -230,22 +320,68 @@ public class PlayerMng : MonoBehaviour
         }
         else
             SetState(playerState.Idle);
-
-        if(step1 == true && isFirstMove == false)
-        {
-            StartCoroutine(MoveTutorial());
-        }
     }
 
-    IEnumerator MoveTutorial()
+
+    private void Fridge()
     {
-        
-        yield return new WaitForSeconds(1f);
-        isFirstMove = true;
+        if(fridgeCollider == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (fridgeOpen == true && haveKey == true)
+                {
+                    print("close");
+                    if(KeyKitchen != null)
+                        KeyKitchen.GetComponent<SpriteRenderer>().enabled = false;
+                    //animation fermer
+                    fridgeOpen = false;
+                }
+                else if (fridgeOpen == false)
+                {
+                    print("open");
+                    if (KeyKitchen != null)
+                        KeyKitchen.GetComponent<SpriteRenderer>().enabled = true;
+                    //animation ouvert
+                    fridgeOpen = true;
+                }
+
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Tutorial
+
+        if(collision.name == "Fridge")
+        {
+            canInteract = true;
+            sprIcone.enabled = true;
+            fridgeCollider = true;
+                
+            
+        }
+
+        if(collision.name == "JackTrigger")
+        {
+            StartCoroutine(PlayDialogue(JackDialogue));
+            Destroy(collision.gameObject);
+        }
+
+        if(collision.name == "FirstClimbTrigger")
+        {         
+            StartCoroutine(PlayDialogue(HugDialogue));
+            Destroy(collision.gameObject); 
+        }
+
+        if(collision.name == "FirstLightTrigger")
+        {
+            StartCoroutine(PlayDialogue(SetLight));
+            Destroy(collision.gameObject);
+        }
+        //
+
         if(collision.tag == "Rooms")
         {
             currentRooms = collision.GetComponent<Rooms>();
@@ -305,8 +441,57 @@ public class PlayerMng : MonoBehaviour
         Destroy(source.gameObject);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.tag == "Lock")
+        {
+            sprIcone.enabled = true;
+            nextToDoor = true;
+            canInteract = true;
+            currentDoor = collision.gameObject;
+        }
+    }
+
+    private void OpenDoor(bool doorKey)
+    {
+        if(nextToDoor == true  && currentDoor != null)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                if(doorKey == true)
+                {
+                    JackTrigger.SetActive(true);
+                    Destroy(currentDoor);
+                    nextToDoor = false;
+                    doorKey = false;
+                    // play is unlock
+                }
+                else
+                    StartCoroutine(PlayDialogue(MoveDialogue));
+                //lockSound
+            }
+        }
+    }
+
+
+
     private void OnTriggerStay2D(Collider2D collision)
     {
+      
+        if(fridgeOpen == true)
+        {
+            if(collision.name == "KeyFirst")
+            {
+                canInteract = true;
+                sprIcone.enabled = true;
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    Destroy(collision.gameObject);
+                    haveKey = true;
+                }
+                
+            }
+        }
 
         if (collision.tag == "Ladder")
         {
@@ -341,6 +526,7 @@ public class PlayerMng : MonoBehaviour
             if (collision.tag == "TP")
             {
                 canTP = true;
+                
                 if(canTP == true && currentState != playerState.Door)
                     sprIcone.enabled = true;
 
@@ -359,14 +545,30 @@ public class PlayerMng : MonoBehaviour
         else
         {
             canTP = false;
-            if (canTP == false && currentState != playerState.Hide && canClimb == false)
+            if (canTP == false && currentState != playerState.Hide && canClimb == false  && canInteract == false)
                 sprIcone.enabled = false;
         }
             
     }
-        private void OnTriggerExit2D(Collider2D collision)
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.tag == "Ladder")
+        if (collision.name == "Fridge")
+        {
+            sprIcone.enabled = false;
+            canInteract = false;
+            fridgeCollider = false;
+        }
+
+        if (collision.tag == "Lock")
+        {
+            sprIcone.enabled = false;
+            nextToDoor = false;
+            currentDoor = null;
+            canInteract = false;
+        }
+
+        if (collision.tag == "Ladder")
         {
             canClimb = false;
             sprIcone.enabled = false;
@@ -448,8 +650,10 @@ public class PlayerMng : MonoBehaviour
 
     private void Climb()
     {
-        if(canClimb)
+
+        if (canClimb)
         {
+
             currentPosition.y = gameObject.transform.position.y;
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -457,7 +661,7 @@ public class PlayerMng : MonoBehaviour
                 rgb2D.velocity = Vector2.zero;
                 SetState(playerState.Climb);
                 this.gameObject.transform.position = new Vector2(ladderTransform.position.x, gameObject.transform.position.y);
-                if(isDown)
+                if (isDown)
                 {
                     Up();
                 }
@@ -468,7 +672,7 @@ public class PlayerMng : MonoBehaviour
                 }
             }
 
-            if(finalLadder != null)
+            if (finalLadder != null)
             {
                 if (isDown)
                 {
@@ -489,13 +693,15 @@ public class PlayerMng : MonoBehaviour
                         SetState(playerState.Idle);
                     }
                 }
-            } 
+            }
         }
+
         else
         {
             isDown = false;
             isTop = false;
         }
+        
             
     }
 
