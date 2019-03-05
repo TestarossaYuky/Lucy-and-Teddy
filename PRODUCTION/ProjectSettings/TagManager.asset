@@ -15,6 +15,7 @@ TagManager:
   - Hide
   - Item
   - Door
+  - Lock
   layers:
   - Default
   - TransparentFX
