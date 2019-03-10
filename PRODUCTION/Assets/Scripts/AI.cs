@@ -35,11 +35,10 @@ public class AI : MonoBehaviour
 
     private Transform View;
 
-    [SerializeField]
-    public GameObject Lucy;
+    private GameObject Lucy;
 
     #region Theme Song
-    public AudioSource theme;
+    private AudioSource theme;
     [SerializeField]
     private AudioClip Main;
     [SerializeField]
@@ -82,6 +81,9 @@ public class AI : MonoBehaviour
 
     private float ladderChance;
 
+    private GameObject START;
+    private GameObject EXIT;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -96,11 +98,25 @@ public class AI : MonoBehaviour
         myAudio = GetComponent<AudioSource>();
         sprIcone = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
         View = this.transform.GetChild(0);
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Lucy == null)
+            Lucy = GameObject.FindGameObjectWithTag("Player");
+
+        if(theme == null)
+            theme = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
+
+        if (START == null)
+            START = GameObject.Find("START");
+
+        if (EXIT == null)
+            EXIT = GameObject.Find("EXIT");
+
         MoveTo();
         Climb();
         
@@ -108,104 +124,108 @@ public class AI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        switch (currentState)
+        if( Lucy != null && theme != null)
         {
-            case State.Idle:
-                {
-                    anim.SetBool("Walk", false);
-                    anim.SetBool("Idle", true);
-
-                    break;
-                }
-
-            case State.Move:
-                {
-                    anim.SetBool("Idle", false);
-                    anim.SetBool("Walk", true);
-
-                    if((currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() && Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor -1) || (Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor && currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() - 1))//|| currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() && currentFloor < Lucy.GetComponent<PlayerMng>().GetCurrentStage() + 1)
+            switch (currentState)
+            {
+                case State.Idle:
                     {
-                        if (myAudio.isPlaying == false)
+                        anim.SetBool("Walk", false);
+                        anim.SetBool("Idle", true);
+
+                        break;
+                    }
+
+                case State.Move:
+                    {
+                        anim.SetBool("Idle", false);
+                        anim.SetBool("Walk", true);
+
+                        if ((currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() && Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor - 1) || (Lucy.GetComponent<PlayerMng>().GetCurrentStage() >= currentFloor && currentFloor >= Lucy.GetComponent<PlayerMng>().GetCurrentStage() - 1))
                         {
-                            int random = Random.Range(0, 2);
-                            if (random == 1)
+                            if (myAudio.isPlaying == false)
                             {
-                                myAudio.PlayOneShot(walk1);
+                                int random = Random.Range(0, 2);
+                                if (random == 1)
+                                {
+                                    myAudio.PlayOneShot(walk1);
+                                }
+                                else if (random == 0)
+                                    myAudio.PlayOneShot(walk2);
                             }
-                            else if (random == 0)
-                                myAudio.PlayOneShot(walk2);
                         }
-                    }
-                    
-                    
-                        
-                    break;
-
-                }
-
-            case State.Climb:
-                {
-
-                    break;
-
-                }
 
 
-        }
 
+                        break;
 
-        switch (currentInfiltration)
-        {
-            case Infiltration.Detected:
-                {
-                    if(myObject.GetIsUse() == false)
-                    {
-                        SetInfiltration(Infiltration.Undetected);
                     }
 
-                    if(currentFloor == myObject.GetStage())
+                case State.Climb:
                     {
-                        if (this.transform.position.x <= myObject.GetComponent<Transform>().position.x)
+
+                        break;
+
+                    }
+
+
+            }
+
+
+            switch (currentInfiltration)
+            {
+                case Infiltration.Detected:
+                    {
+                        if (myObject.GetIsUse() == false)
                         {
-                            this.SetDirection(1);
-
+                            SetInfiltration(Infiltration.Undetected);
                         }
-                        else
+
+                        if (currentFloor == myObject.GetStage())
                         {
-                            this.SetDirection(-1);
+                            if (this.transform.position.x <= myObject.GetComponent<Transform>().position.x)
+                            {
+                                this.SetDirection(1);
+
+                            }
+                            else
+                            {
+                                this.SetDirection(-1);
+                            }
                         }
+
+                        else if (currentFloor > myObject.GetStage())
+                        {
+                            //check l'échelle la plus proche
+                        }
+
+                        sprIcone.sprite = detect;
+                        sprIcone.enabled = true;
+
+                        break;
                     }
 
-                    else if(currentFloor > myObject.GetStage())
+                case Infiltration.Undetected:
                     {
-                        //check l'échelle la plus proche
+
+                        sprIcone.enabled = false;
+                        break;
+
                     }
 
-                    sprIcone.sprite = detect;
-                    sprIcone.enabled = true;
+                case Infiltration.Trigger:
+                    {
+                        sprIcone.sprite = trigger;
+                        sprIcone.enabled = true;
+                        break;
 
-                    break;
-                }
-
-            case Infiltration.Undetected:
-                {
-
-                    sprIcone.enabled = false;
-                    break;
-
-                }
-
-            case Infiltration.Trigger:
-                {
-                    sprIcone.sprite = trigger;
-                    sprIcone.enabled = true;
-                    break;
-
-                }
+                    }
 
 
+            }
+            SpacialSong();
         }
-        SpacialSong();
+        
     }
 
     void SetState(State state)
@@ -221,27 +241,29 @@ public class AI : MonoBehaviour
     public void SetInfiltration(Infiltration infiltration)
     {
         currentInfiltration = infiltration;
-
-        if(infiltration == Infiltration.Trigger)
+        if(theme != null)
         {
-            theme.clip = Trigger;
-            theme.Play();
-            theme.loop = true;
-        }
+            if (infiltration == Infiltration.Trigger)
+            {
+                theme.clip = Trigger;
+                theme.Play();
+                theme.loop = true;
+            }
 
-        else if (infiltration == Infiltration.Undetected)
-        {
-            theme.clip = Main;
-            theme.Play();
-            theme.loop = true;
-        }
+            else if (infiltration == Infiltration.Undetected)
+            {
+                theme.clip = Main;
+                theme.Play();
+                theme.loop = true;
+            }
 
-        else if (infiltration == Infiltration.Detected)
-        {
-            theme.clip = Detected;
-            theme.Play();
-            theme.loop = true;
+            else if (infiltration == Infiltration.Detected)
+            {
+                theme.Play();
+                theme.loop = true;
+            }
         }
+        
     }
 
     public Infiltration GetInfiltration()
@@ -298,10 +320,6 @@ public class AI : MonoBehaviour
             View.localScale = this.transform.localScale;
         }
             
-
-
-        
-
         //Movement Script
         movement = new Vector2(speed * currentDirection, 0);
         this.rgb2D.velocity = movement * Time.deltaTime;
@@ -347,6 +365,13 @@ public class AI : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.name == "StartTrigger")
+        {
+            START.GetComponent<BoxCollider2D>().enabled = true;
+            EXIT.GetComponent<BoxCollider2D>().enabled = true;
+            Destroy(collision.gameObject);
+        }
+
         if(collision.tag == "Stage" && currentState != State.Climb)
         {
             myStage = collision.GetComponent<Stage>();

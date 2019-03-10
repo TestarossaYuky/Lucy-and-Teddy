@@ -328,12 +328,14 @@ MonoBehaviour:
   currentRooms: {fileID: 0}
   door1: {fileID: 8300000, guid: 34eb4fd6f66383c4fa812d274cfcd2ef, type: 3}
   door2: {fileID: 8300000, guid: b3537dbdcbbc0194c9801e7e9420b659, type: 3}
-  myGameMng: {fileID: 0}
+  myGameMng: {fileID: 1024138520652037953, guid: 0e6ae198c2249e842be12f1bcc6c0f02,
+    type: 3}
   currentState: 0
+  EXIT: {fileID: 0}
   MoveDialogue: {fileID: 8300000, guid: f5f1340a4b1b9704098b528d46559ad2, type: 3}
   HugDialogue: {fileID: 8300000, guid: f022538c5e14be24aba850a2d66be0f6, type: 3}
   SetLight: {fileID: 8300000, guid: fe48ec23fd973df4d9be23721a0fceea, type: 3}
-  MusiqueOn: {fileID: 0}
+  JackDialogue: {fileID: 8300000, guid: 57b3903de6fa4344890b9d032f0d7c40, type: 3}
   DoorLock: {fileID: 0}
   DoorUnLock: {fileID: 0}
   FridgeOpen: {fileID: 0}

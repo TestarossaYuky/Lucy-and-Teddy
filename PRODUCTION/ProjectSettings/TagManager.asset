@@ -16,6 +16,8 @@ TagManager:
   - Item
   - Door
   - Lock
+  - Jack
+  - GM
   layers:
   - Default
   - TransparentFX

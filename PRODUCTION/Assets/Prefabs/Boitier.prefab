@@ -61,8 +61,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  group5:
   - {fileID: 0}
+  group5:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -72,11 +72,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   inputName:
-  - p
   - z
-  - e
-  - r
-  - t
-  - y
+  - q
+  - s
+  - d
+  - f
+  - g
   button: 000000000000
+  myGameMng: {fileID: 1024138520652037953, guid: 0e6ae198c2249e842be12f1bcc6c0f02,
+    type: 3}

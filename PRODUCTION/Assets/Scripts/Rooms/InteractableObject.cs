@@ -38,9 +38,11 @@ public class InteractableObject : MonoBehaviour
     public int isCheck = 0;
 
     [SerializeField]
-    private string inputName;
+    private string input;
 
-    public PlayerMng myPlayer;
+    public GameMng myGameMng;
+
+    private PlayerMng myPlayer;
 
     private bool isFirstListen = false;
 
@@ -52,82 +54,93 @@ public class InteractableObject : MonoBehaviour
         spr = GetComponent<SpriteRenderer>();
         baseColor = spr.color;
         mySource = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        haveElectricity = myRooms.GetIsOn();
+        if (myPlayer == null && GameObject.FindGameObjectWithTag("Player") != null)
+            myPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMng>();
 
-        if(myPlayer.GetJack() != false)
+        else if(myPlayer != null)
         {
-            if (haveElectricity)
+            haveElectricity = myRooms.GetIsOn();
+            if (myPlayer.GetJack() != false || myGameMng.currentState != GameMng.GameState.Tutorial)
+            {
+                if (haveElectricity)
+                {
+
+                    if (input != null)
+                    {
+                        ChangeColor(spr.color);
+
+                        if (Input.GetKeyDown(input))
+                        {
+                            isCheck = 0;
+                            ActiveWave();
+                            SetIsUse(true);
+                            isCheck++;
+                        }
+
+                        if (Input.GetKeyUp(input))
+                        {
+                            ActiveWave();
+                            if (mySource != null && mySource.isPlaying == true)
+                                mySource.Stop();
+                        }
+                    }
+                }
+                else
+                {
+                    spr.color = baseColor;
+                    SetIsUse(false);
+                    isCheck = 0;
+
+                    waveCollider.enabled = false;
+                }
+            }
+            if (isUse)
             {
 
-                if (inputName != null)
+
+                if (mySource != null)
+                    mySource.mute = false;
+
+
+
+                if (this.gameObject.name == "Radio")
                 {
-                    ChangeColor(spr.color);
-
-                    if (Input.GetKeyDown(inputName))
+                    if (isCheck > 0)
                     {
+                        StartCoroutine(PlayRadio());
                         isCheck = 0;
-                        ActiveWave();
-                        SetIsUse(true);
-                        isCheck++;
                     }
-
-                    if (Input.GetKeyUp(inputName))
+                }
+                else if (this.gameObject.name == "Phonographe")
+                {
+                    if (isCheck > 0)
                     {
-                        ActiveWave();
+                        StartCoroutine(PlayPhonographe());
+                        isCheck = 0;
                     }
                 }
             }
             else
             {
-                spr.color = baseColor;
-                SetIsUse(false);
-                isCheck = 0;
-
-                waveCollider.enabled = false;
+                if (mySource != null)
+                {
+                    mySource.mute = true;
+                    mySource.Stop();
+                    mySource.clip = null;
+                }
             }
         }
+
+       
         
 
-        if (isUse)
-        {
-
-
-            if(mySource != null) 
-                mySource.mute = false;
-
-            
-
-            if (this.gameObject.name == "Radio")
-            {
-                if(isCheck > 0)
-                {
-                    StartCoroutine(PlayRadio());
-                    isCheck = 0;
-                }
-            }
-            else if(this.gameObject.name == "Phonographe")
-            {
-                if (isCheck > 0)
-                {
-                    StartCoroutine(PlayPhonographe());
-                    isCheck = 0;
-                }
-            }
-        }
-        else
-        {
-            if(mySource != null)
-            {
-                mySource.mute = true;
-                mySource.Stop();
-                mySource.clip = null;
-            }
-        }
+        
     }
 
     public bool GetListen()

@@ -25,7 +25,7 @@ public class PlayerMng : MonoBehaviour
     #endregion
 
     #region Component
-    public GameMng myGameMng;
+    private GameMng myGameMng;
     private Rigidbody2D rgb2D;
     private SpriteRenderer sprRenderer;
     private Animator anim;
@@ -70,8 +70,8 @@ public class PlayerMng : MonoBehaviour
     private bool haveKey = false;
     private bool nextToDoor = false;
     private GameObject currentDoor;
-    public GameObject KeyKitchen;
-    public GameObject JackTrigger;
+    private GameObject KeyKitchen;
+    private GameObject JackTrigger;
 
     private bool fridgeOpen = false;
     private bool fridgeCollider = false;
@@ -93,7 +93,8 @@ public class PlayerMng : MonoBehaviour
     public AudioClip FridgeOpen;
     public AudioClip FridgeClose;
 
-    public InteractableObject phono;
+    private GameObject myPhono;
+    private InteractableObject phono;
 
     #endregion
 
@@ -113,60 +114,77 @@ public class PlayerMng : MonoBehaviour
         anim = GetComponent<Animator>();
         sprIcone = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         TeddySource = this.transform.GetChild(1).GetComponent<AudioSource>();
+        KeyKitchen = GameObject.Find("KeyKitchen");
+        JackTrigger = GameObject.FindGameObjectWithTag("Jack");
+        myPhono = GameObject.Find("Phonographe");
+        if(myPhono != null)
+            phono = myPhono.GetComponent<InteractableObject>();
+        if (myGameMng == null)
+            myGameMng = GameObject.Find("GameManager").GetComponent<GameMng>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+
+        print(myGameMng);
+
         OpenDoor(haveKey);
         Fridge();
-        if(myGameMng.currentState == GameMng.GameState.Tutorial)
-        {            
-            
-            if(currentState == playerState.Dialogue && step1 == false)
+        if(myGameMng != null)
+        {
+            if (myGameMng.currentState == GameMng.GameState.Tutorial)
             {
-                StartCoroutine(PlayDialogue(MoveDialogue));
+
+                if (currentState == playerState.Dialogue && step1 == false)
+                {
+                    StartCoroutine(PlayDialogue(MoveDialogue));
+                }
+                if (step1 == true && currentState != playerState.Dialogue && currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
+                {
+                    Move();
+                }
+                if (climbTutorial == true && currentState != playerState.Dialogue)
+                {
+                    Climb();
+                    Teleport();
+                    Hide();
+                }
+
+                if (step2 == true)
+                {
+                    isFirstLight = true;
+
+                }
+
+                if (step3 == true)
+                {
+                    isFirstJack = true;
+                }
+
+                if (phono.GetListen() == true)
+                {
+                    myGameMng.SetState(GameMng.GameState.First);
+                }
             }
-            if(step1 == true && currentState != playerState.Dialogue)
+
+            else
             {
-                Move();
-            }
-            if (climbTutorial == true && currentState != playerState.Dialogue)
-            {
+
+                if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
+                    Move();
+
                 Climb();
                 Teleport();
                 Hide();
+
+
             }
 
-            if(step2 == true)
-            {
-                isFirstLight = true;
-              
-            }
-
-            if(step3 == true)
-            {
-                isFirstJack = true;
-            }
-
-            if(phono.GetListen() == true)
-            {
-                myGameMng.SetState(GameMng.GameState.First);
-            }
         }
-
-        else
-        {
-            
-            if (currentState != playerState.Climb && currentState != playerState.Hide && currentState != playerState.Door)
-                Move();
-
-            Climb();
-            Teleport();
-            Hide();
-
-            
-        }
+        
         if (currentRooms != null)
             isOn = currentRooms.GetIsOn();
     }
@@ -359,8 +377,6 @@ public class PlayerMng : MonoBehaviour
             canInteract = true;
             sprIcone.enabled = true;
             fridgeCollider = true;
-                
-            
         }
 
         if(collision.name == "JackTrigger")
@@ -460,10 +476,10 @@ public class PlayerMng : MonoBehaviour
             {
                 if(doorKey == true)
                 {
-                    JackTrigger.SetActive(true);
                     Destroy(currentDoor);
                     nextToDoor = false;
                     doorKey = false;
+                    JackTrigger.GetComponent<BoxCollider2D>().enabled = true;
                     // play is unlock
                 }
                 else
@@ -480,7 +496,7 @@ public class PlayerMng : MonoBehaviour
       
         if(fridgeOpen == true)
         {
-            if(collision.name == "KeyFirst")
+            if(collision.name == "KeyKitchen")
             {
                 canInteract = true;
                 sprIcone.enabled = true;
