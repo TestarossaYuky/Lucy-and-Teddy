@@ -55,6 +55,9 @@ public class AI : MonoBehaviour
     [SerializeField]
     private AudioClip walk2;
 
+    [SerializeField]
+    private AudioClip Enter;
+
     #endregion
 
     #region Component
@@ -369,7 +372,11 @@ public class AI : MonoBehaviour
         {
             START.GetComponent<BoxCollider2D>().enabled = true;
             EXIT.GetComponent<BoxCollider2D>().enabled = true;
+            SetState(State.Idle);
+            myAudio.PlayOneShot(Enter);           
+            StartCoroutine(WaitingTime(Enter.length));
             Destroy(collision.gameObject);
+            
         }
 
         if(collision.tag == "Stage" && currentState != State.Climb)
@@ -530,10 +537,7 @@ public class AI : MonoBehaviour
     {
         
         if(currentState == State.Move && currentInfiltration != Infiltration.Detected)
-        {
-            float waiting = Random.Range(0.5f, 2.5f);
-            StartCoroutine(WaitingTime(waiting));
-  
+        { 
             float waitingTime = Random.Range(3, 6);
             StartCoroutine(WaitingTime(waitingTime));
         }
@@ -543,6 +547,7 @@ public class AI : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
 
+        
         if (currentState != State.Move)
             SetState(State.Move);
         else

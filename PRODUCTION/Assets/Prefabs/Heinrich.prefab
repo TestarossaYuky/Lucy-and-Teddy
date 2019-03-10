@@ -282,6 +282,7 @@ MonoBehaviour:
   Detected: {fileID: 8300000, guid: 9afe52920b879674493407091d99b87d, type: 3}
   walk1: {fileID: 8300000, guid: 5dc37401588955b4e9a9824bbf79657a, type: 3}
   walk2: {fileID: 8300000, guid: c85ed2f5ce1e31e4c85db93e6cb01430, type: 3}
+  Enter: {fileID: 8300000, guid: 240fd10cc4387e041a59af0c74fe5ba7, type: 3}
   speed: 140
 --- !u!61 &5703400626693521558
 BoxCollider2D:

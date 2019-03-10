@@ -127,10 +127,6 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
-        print(myGameMng);
-
         OpenDoor(haveKey);
         Fridge();
         if(myGameMng != null)
