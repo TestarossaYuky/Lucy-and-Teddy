@@ -98,6 +98,22 @@ public class PlayerMng : MonoBehaviour
 
     #endregion
 
+    #region Step1
+
+    private bool ArmorOpen = false;
+
+    private bool keyStep1 = false;
+    private bool ArmorCanOpen = false;
+    private bool CanStep1 = false;
+    private bool CanOpenChest = false;
+
+    private bool bookStory = false;
+
+
+    private GameObject StepFirstKey;
+
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -115,6 +131,7 @@ public class PlayerMng : MonoBehaviour
         sprIcone = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         TeddySource = this.transform.GetChild(1).GetComponent<AudioSource>();
         KeyKitchen = GameObject.Find("KeyKitchen");
+        StepFirstKey = GameObject.Find("KeyStep1");
         JackTrigger = GameObject.FindGameObjectWithTag("Jack");
         myPhono = GameObject.Find("Phonographe");
         if(myPhono != null)
@@ -127,12 +144,14 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        OpenDoor(haveKey);
-        Fridge();
+        
+        
         if(myGameMng != null)
         {
             if (myGameMng.currentState == GameMng.GameState.Tutorial)
             {
+                OpenDoor(haveKey);
+                Fridge();
 
                 if (currentState == playerState.Dialogue && step1 == false)
                 {
@@ -166,6 +185,8 @@ public class PlayerMng : MonoBehaviour
                 }
             }
 
+           
+
             else
             {
 
@@ -180,7 +201,19 @@ public class PlayerMng : MonoBehaviour
             }
 
         }
-        
+
+        if (myGameMng.currentState == GameMng.GameState.First)
+        {
+            Armor();
+            Step1Key();
+            Coffre();
+            if(bookStory == true)
+            {
+                canInteract = false;
+                myGameMng.SetState(GameMng.GameState.Second);
+            }
+        }
+
         if (currentRooms != null)
             isOn = currentRooms.GetIsOn();
     }
@@ -216,6 +249,63 @@ public class PlayerMng : MonoBehaviour
         
 
         SetState(playerState.Idle);
+    }
+
+
+    private void Armor()
+    {
+        if(ArmorCanOpen == true)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                if(ArmorOpen == false)
+                    ArmorOpen = true;
+
+                else if(ArmorOpen == true)
+                    ArmorOpen = false;
+            }
+        }
+    }
+
+    private void Step1Key()
+    {
+        if (ArmorOpen == true && keyStep1 == false)
+        {
+            if(StepFirstKey.GetComponent<SpriteRenderer>().enabled == false && StepFirstKey != null)
+                StepFirstKey.GetComponent<SpriteRenderer>().enabled = true;
+
+            if(CanStep1 == true)
+            {
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    Destroy(StepFirstKey);
+                    keyStep1 = true;
+                    CanStep1 = false; 
+                }
+            }
+        }
+    }
+
+    private void Coffre()
+    {
+        if(CanOpenChest == true)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                if (keyStep1 == false)
+                {
+                    // play Song oh it's close
+
+                }
+                else
+                {
+                    canInteract = false;
+                    bookStory = true;
+                }
+            }
+            
+        }
+        
     }
 
     public bool GetJack()
@@ -278,9 +368,7 @@ public class PlayerMng : MonoBehaviour
 
             case playerState.Climb:
                 {
-
                     break;
-
                 }
 
             case playerState.Hide:
@@ -368,33 +456,70 @@ public class PlayerMng : MonoBehaviour
     {
         // Tutorial
 
-        if(collision.name == "Fridge")
+        if (myGameMng.currentState == GameMng.GameState.Tutorial)
         {
-            canInteract = true;
-            sprIcone.enabled = true;
-            fridgeCollider = true;
+            if (collision.name == "Fridge")
+            {
+                canInteract = true;
+                sprIcone.enabled = true;
+                fridgeCollider = true;
+            }
+
+            if (collision.name == "JackTrigger")
+            {
+                StartCoroutine(PlayDialogue(JackDialogue));
+                Destroy(collision.gameObject);
+            }
+
+            if (collision.name == "FirstClimbTrigger")
+            {
+                StartCoroutine(PlayDialogue(HugDialogue));
+                Destroy(collision.gameObject);
+            }
+
+            if (collision.name == "FirstLightTrigger")
+            {
+                StartCoroutine(PlayDialogue(SetLight));
+                Destroy(collision.gameObject);
+            }
         }
 
-        if(collision.name == "JackTrigger")
-        {
-            StartCoroutine(PlayDialogue(JackDialogue));
-            Destroy(collision.gameObject);
-        }
-
-        if(collision.name == "FirstClimbTrigger")
-        {         
-            StartCoroutine(PlayDialogue(HugDialogue));
-            Destroy(collision.gameObject); 
-        }
-
-        if(collision.name == "FirstLightTrigger")
-        {
-            StartCoroutine(PlayDialogue(SetLight));
-            Destroy(collision.gameObject);
-        }
         //
 
-        if(collision.tag == "Rooms")
+        // Step1
+
+        if (myGameMng.currentState == GameMng.GameState.First)
+        {
+            if(collision.name == "Armoire")
+            {
+                sprIcone.enabled = true;
+                ArmorCanOpen = true;
+                canInteract = true;
+            }
+
+            if(collision.name == "KeyStep1" && ArmorOpen == true)
+            {
+                CanStep1 = true;
+            }
+
+            if(bookStory == true)
+            {
+                sprIcone.enabled = false;
+                canInteract = false;
+            }
+
+            if(collision.name == "Coffre")
+            {
+                sprIcone.enabled = true;
+                canInteract = true;
+                CanOpenChest = true;
+            }
+
+        }
+
+        //
+
+            if (collision.tag == "Rooms")
         {
             currentRooms = collision.GetComponent<Rooms>();
         }
@@ -565,6 +690,29 @@ public class PlayerMng : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (myGameMng.currentState == GameMng.GameState.First)
+        {
+            if (collision.name == "Armoire")
+            {
+                sprIcone.enabled = false;
+                canInteract = false;
+                ArmorCanOpen = false;
+            }
+            if(collision.name == "KeyStep1")
+            {
+                sprIcone.enabled = false;
+                canInteract = false;
+                CanStep1 = false;
+            }
+
+            if (collision.name == "Coffre")
+            {
+                sprIcone.enabled = false;
+                canInteract = false;
+                CanOpenChest = false;
+            }
+        }
+
         if (collision.name == "Fridge")
         {
             sprIcone.enabled = false;
