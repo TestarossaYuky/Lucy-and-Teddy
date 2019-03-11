@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-
-
     public int currentStage;
     public int currentRoom;
 
@@ -30,10 +28,23 @@ public class InteractableObject : MonoBehaviour
     public AudioClip RadioStation1;
     public AudioClip RadioStation2;
 
+
+    public AudioClip PhonoOn;
+    public AudioClip PhonoOff;
+
+    public AudioClip PhonoStation1;
+    public AudioClip PhonoStation2;
+
     public int isCheck = 0;
 
     [SerializeField]
-    private string inputName;
+    private string input;
+
+    public GameMng myGameMng;
+
+    private PlayerMng myPlayer;
+
+    private bool isFirstListen = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,70 +54,98 @@ public class InteractableObject : MonoBehaviour
         spr = GetComponent<SpriteRenderer>();
         baseColor = spr.color;
         mySource = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        haveElectricity = myRooms.GetIsOn();
+        if (myPlayer == null && GameObject.FindGameObjectWithTag("Player") != null)
+            myPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMng>();
 
-        if (haveElectricity)
+        else if(myPlayer != null)
         {
-            
-            if (inputName != null)
+            haveElectricity = myRooms.GetIsOn();
+            if (myPlayer.GetJack() != false || myGameMng.currentState != GameMng.GameState.Tutorial)
             {
-                ChangeColor(spr.color);
-
-                if (Input.GetKeyDown(inputName))
+                if (haveElectricity)
                 {
-                    isCheck = 0;
-                    ActiveWave();
-                    SetIsUse(true);
-                    isCheck++;
-                }
 
-                if (Input.GetKeyUp(inputName))
+                    if (input != null)
+                    {
+                        ChangeColor(spr.color);
+
+                        if (Input.GetKeyDown(input))
+                        {
+                            isCheck = 0;
+                            ActiveWave();
+                            SetIsUse(true);
+                            isCheck++;
+                        }
+
+                        if (Input.GetKeyUp(input))
+                        {
+                            ActiveWave();
+                            if (mySource != null && mySource.isPlaying == true)
+                                mySource.Stop();
+                        }
+                    }
+                }
+                else
                 {
-                    ActiveWave();
-                }
-            }       
-        }
-        else
-        {
-            spr.color = baseColor;
-            SetIsUse(false);
+                    spr.color = baseColor;
+                    SetIsUse(false);
                     isCheck = 0;
 
-            waveCollider.enabled = false;
-        }
-
-        if (isUse)
-        {
-
-
-            if(mySource != null) 
-                mySource.mute = false;
-
-            
-
-            if (this.gameObject.name == "Radio")
+                    waveCollider.enabled = false;
+                }
+            }
+            if (isUse)
             {
-                if(isCheck > 0)
+
+
+                if (mySource != null)
+                    mySource.mute = false;
+
+
+
+                if (this.gameObject.name == "Radio")
                 {
-                    StartCoroutine(PlayRadio());
-                    isCheck = 0;
+                    if (isCheck > 0)
+                    {
+                        StartCoroutine(PlayRadio());
+                        isCheck = 0;
+                    }
+                }
+                else if (this.gameObject.name == "Phonographe")
+                {
+                    if (isCheck > 0)
+                    {
+                        StartCoroutine(PlayPhonographe());
+                        isCheck = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (mySource != null)
+                {
+                    mySource.mute = true;
+                    mySource.Stop();
+                    mySource.clip = null;
                 }
             }
         }
-        else
-        {
-            if(mySource != null)
-            {
-                mySource.mute = true;
-                mySource.Stop();
-                mySource.clip = null;
-            }
-        }
+
+       
+        
+
+        
+    }
+
+    public bool GetListen()
+    {
+        return isFirstListen;
     }
 
     IEnumerator PlayRadio()
@@ -116,29 +155,77 @@ public class InteractableObject : MonoBehaviour
         yield return new WaitForSeconds(mySource.clip.length);
 
         int i = Random.Range(0, 2);
+ 
+            if (i == 0)
+            {
+                mySource.clip = RadioStation1;
+                mySource.PlayOneShot(RadioStation1, 0.05f);
+                yield return new WaitForSeconds(mySource.clip.length);
+            }
 
-        if(i == 0)
-        {
-            mySource.clip = RadioStation1;
-            mySource.PlayOneShot(RadioStation1, 0.05f);
+            else if (i == 1)
+            {
+                mySource.clip = RadioStation2;
+                mySource.PlayOneShot(RadioStation2, 0.05f);
+                yield return new WaitForSeconds(mySource.clip.length);
+            }
+
+
+
+            mySource.clip = RadioOff;
+            mySource.PlayOneShot(RadioOff, 1f);
             yield return new WaitForSeconds(mySource.clip.length);
-        }
 
-        else if( i == 1)
-        {
-            mySource.clip = RadioStation2;
-            mySource.PlayOneShot(RadioStation2, 0.05f);
-            yield return new WaitForSeconds(mySource.clip.length);
-        }
-
+            isCheck = 0;
+      
         
+    }
 
-        mySource.clip = RadioOff;
-        mySource.PlayOneShot(RadioOff, 1f);
+    IEnumerator PlayPhonographe()
+    {
+        mySource.clip = PhonoOn;
+        mySource.PlayOneShot(PhonoOn, 1f);
         yield return new WaitForSeconds(mySource.clip.length);
 
-        isCheck = 0;
+        int i = Random.Range(0, 2);
+
+        if (isFirstListen == false)
+        {
+            mySource.clip = PhonoStation1;
+            mySource.PlayOneShot(PhonoStation1, 0.05f);
+            yield return new WaitForSeconds(1.5f);
+            mySource.Stop();
+            isCheck = 0;
+            isFirstListen = true;
+        }
+        else
+        {
+            if (i == 0)
+            {
+                mySource.clip = PhonoStation1;
+                mySource.PlayOneShot(PhonoStation1, 0.05f);
+                yield return new WaitForSeconds(mySource.clip.length);
+            }
+
+            else if (i == 1)
+            {
+                mySource.clip = PhonoStation2;
+                mySource.PlayOneShot(PhonoStation2, 0.05f);
+                yield return new WaitForSeconds(mySource.clip.length);
+            }
+
+
+
+            mySource.clip = PhonoOff;
+            mySource.PlayOneShot(PhonoOff, 1f);
+            yield return new WaitForSeconds(mySource.clip.length);
+
+            isCheck = 0;
+        }
+
+       
     }
+
 
     private void ChangeColor(Color c)
     {
@@ -152,6 +239,7 @@ public class InteractableObject : MonoBehaviour
                     isCheck = 0;
             }
         }
+
         if(myColor == "Red")
         {
             spr.color = Color.red;

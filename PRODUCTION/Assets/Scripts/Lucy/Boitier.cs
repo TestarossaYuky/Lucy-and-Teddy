@@ -42,6 +42,11 @@ public class Boitier : MonoBehaviour
 
     #endregion
 
+    private GameObject player;
+    private PlayerMng myPlayer;
+
+    public GameMng myGameMng;
+
     private void Awake()
     {
         globalGroup.Add(group1);
@@ -60,57 +65,70 @@ public class Boitier : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player");
+
+        else if (player != null)
+            myPlayer = player.GetComponent<PlayerMng>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isOverload)
+        if(myPlayer != null)
         {
-            for (int i = 0; i < globalGroup.Count; i++)
+            if (myPlayer.GetStep2() != false && myPlayer.GetFirstLight() == true  ||myGameMng.currentState != GameMng.GameState.Tutorial)
             {
-                Overload(globalGroup[i]);
-                button[i] = false;
-                lastInput[i] = false;
-                
-            }
-            if (!Input.anyKey)
-                overload = 0;
-        }
-
-        else
-        {   
-            for (int i = 0; i < inputName.Count; i++)
-            {
-                if (Input.anyKeyDown)
+                if (isOverload)
                 {
-                    if (Input.GetKeyDown(inputName[i]))
+                    for (int i = 0; i < globalGroup.Count; i++)
                     {
-                        button[i] = true;
-                        
-                        CheckRooms(globalGroup[i]);
-                        
-                        overload++;
+                        Overload(globalGroup[i]);
+                        button[i] = false;
+                        lastInput[i] = false;
+
                     }
-
-
+                    if (!Input.anyKey)
+                        overload = 0;
                 }
 
-                if (Input.GetKeyUp(inputName[i]))
+                else
                 {
+                    for (int i = 0; i < inputName.Count; i++)
+                    {
+                        if (Input.anyKeyDown)
+                        {
+                            if (Input.GetKeyDown(inputName[i]))
+                            {
+                                button[i] = true;
 
-                    SwitchOnOff(button[i], globalGroup[i]);
-                    button[i] = false;
-                    lastInput[i] = button[i];
+                                CheckRooms(globalGroup[i]);
 
-                    if (overload != 0)
-                        overload--;
+                                overload++;
+                            }
+
+                            if (myPlayer.GetFirstLight() == true && myPlayer.GetClear() == false && myGameMng.currentState != GameMng.GameState.Tutorial)
+                                myPlayer.SetClear(true);
+                        }
+
+                        if (Input.GetKeyUp(inputName[i]))
+                        {
+
+                            SwitchOnOff(button[i], globalGroup[i]);
+                            button[i] = false;
+                            lastInput[i] = button[i];
+
+                            if (overload != 0)
+                                overload--;
+                        }
+
+                    }
                 }
-
+                OverloadState();
             }
         }
-        OverloadState();
+        
+        
 
     }
 
